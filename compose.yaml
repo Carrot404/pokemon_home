@@ -1,0 +1,30 @@
+name: pokemon_home
+
+services:
+  pokemon_home_api:
+    build:
+      context: .
+      target: api
+    image: pokemon_home_api:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_PATH: /data/pokemon_home.sqlite
+      SYNC_USERNAME: ${SYNC_USERNAME:?请在 .env 中设置 SYNC_USERNAME}
+      SYNC_PASSWORD_HASH: ${SYNC_PASSWORD_HASH:?请在 .env 中设置 SYNC_PASSWORD_HASH}
+    volumes:
+      - pokemon_home_data:/data
+
+  pokemon_home:
+    build:
+      context: .
+      target: web
+    image: pokemon_home:latest
+    restart: unless-stopped
+    depends_on:
+      pokemon_home_api:
+        condition: service_healthy
+    ports:
+      - "${HOST_PORT:-25173}:80"
+
+volumes:
+  pokemon_home_data:

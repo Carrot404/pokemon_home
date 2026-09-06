@@ -229,7 +229,7 @@ function parseCsv(text) {
 
 async function fetchText(url) {
   const response = await fetch(url, {
-    headers: { 'User-Agent': 'pokemon-home-box-guide/1.0 (local data generator)' },
+    headers: { 'User-Agent': 'pokemon_home/1.0 (local data generator)' },
   })
 
   if (!response.ok) {

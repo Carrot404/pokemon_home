@@ -1,22 +1,70 @@
 # HOME 全国图鉴收纳册
 
-一个用于规划 Pokémon HOME 全国图鉴箱位的本地 React 网页。普通与闪光形态左右相邻，每代从新箱开始，并可在浏览器中记录收集状态。
+一个用于规划 Pokémon HOME 全国图鉴箱位的 React 网页。普通与闪光形态左右相邻，每代从新箱开始；单账户同步服务使用 SQLite 保存收藏状态，可跨设备使用。
 
 ## 本地运行
 
+需要 Node.js 22.13 或更高版本。安装依赖并创建本地配置：
+
 ```bash
-npm install
+npm ci
+cp .env.example .env
+npm run password:hash
+```
+
+将最后一条命令输出的 `SYNC_PASSWORD_HASH=...` 填入 `.env`，并按需修改 `SYNC_USERNAME`。不要提交 `.env`。
+
+分别启动 API 和 Vite 开发服务器：
+
+```bash
+npm run server
+```
+
+```bash
 npm run dev
 ```
 
-按终端提示打开本地地址（通常为 <http://localhost:5173>）。精灵图片从远程 CDN 加载，使用时需要联网。
+按终端提示打开 <http://localhost:5173>。Vite 会将 `/api` 代理到 <http://127.0.0.1:3000>；本地 SQLite 文件写入 `data/`。精灵图片来自远程 CDN，使用时需要联网。
 
 生产构建：
 
 ```bash
 npm run build
-npm run preview
 ```
+
+## Docker 部署
+
+首次部署前创建账户配置：
+
+```bash
+cp .env.example .env
+npm run password:hash
+```
+
+将生成的密码哈希填入 `.env`，然后构建并启动：
+
+```bash
+docker compose up -d --build
+```
+
+网页监听宿主机 `25173` 端口。Nginx Proxy Manager 使用 `http` 协议转发到服务器 IP 的 `25173` 端口，并为正式域名启用 HTTPS。外部仍只有一个入口；容器内 Nginx 提供静态网页，并将 `/api` 转发给同步服务。
+
+SQLite 数据保存在 Docker volume `pokemon_home_data` 中。普通更新或重建容器不会删除收藏数据；不要使用 `docker compose down -v`，除非确定需要删除数据库。
+
+修改 `.env` 中的用户名或密码哈希并重新创建 API 容器，会使已有登录会话失效：
+
+```bash
+docker compose up -d --force-recreate pokemon_home_api
+```
+
+### 迁移原有本地收藏
+
+1. 使用原来完全相同的本地地址（通常是 <http://localhost:5173>）打开更新后的网页。
+2. 在登录页点击“导出本机备份”。
+3. 打开正式网站并登录。
+4. 首次同步页面选择“导入 JSON 备份”，确认数量后上传到服务器。
+
+服务器初始化后以 SQLite 数据为准；浏览器 `localStorage` 只保留一份本机缓存。在线设备每次修改都会立即提交，并在页面重新获得焦点或最多约 15 秒后读取其他设备的更新。
 
 ## 收纳规则
 
@@ -52,7 +100,8 @@ npm run preview
 - 按收集状态以及普通/闪光筛选；筛选只淡化项目，不会重排箱位。
 - 可超级进化的宝可梦会显示对应进化石图标；新增进化石缺少图标素材时使用钥石代替。
 - 点击宝可梦查看中文名、分类、属性、世代、箱号、格号、行列位置和普通/闪光图片；详情底部同时展示全部 Mega 普通与闪光形态。
-- 收集状态保存在当前浏览器的 `localStorage` 中；清除站点数据会同时清除进度。
+- 使用单账户登录将收集状态保存到 SQLite，并在在线设备间同步；浏览器 `localStorage` 仅作为本机缓存。
+- 首次登录可导入原有本机进度，登录后也可随时导出 JSON 备份。
 - 手机端维持完整 6 × 5 箱子，可横向滑动查看。
 
 ## 数据与检查
@@ -65,7 +114,7 @@ npm run preview
 npm run data:generate
 ```
 
-检查形态数量、排序、箱号和普通/闪光相邻规则：
+检查形态数量、排序、箱号、普通/闪光相邻规则，以及认证和 SQLite 持久化：
 
 ```bash
 npm test

@@ -8,11 +8,19 @@ import {
   getSpriteUrl,
   getWikiUrl,
 } from './lib/boxPlanner.js'
+import {
+  acknowledgePendingChange,
+  parsePendingChanges,
+  recordPendingChange,
+  serializePendingChanges,
+} from './lib/pendingChanges.js'
+import { SyncApiError, syncApi } from './lib/syncApi.js'
 
 const plan = buildBoxPlan(pokemonData.entries)
 const entriesByKey = new Map(pokemonData.entries.map((entry) => [entry.key, entry]))
 const validSlotKeys = new Set(plan.slots.map((slot) => slot.key))
 const STORAGE_KEY = 'pokemon-home-box-guide:collection:v1'
+const PENDING_STORAGE_KEY = 'pokemon-home-box-guide:pending-collection:v1'
 const PLACEHOLDER_IMAGE = `${import.meta.env.BASE_URL}pokemon-placeholder.svg`
 const KEY_STONE_IMAGE = getItemSpriteUrl('key-stone')
 
@@ -28,14 +36,86 @@ const VARIANT_FILTERS = [
   { id: 'shiny', label: '闪光' },
 ]
 
-function loadCollection() {
+function collectionFromKeys(keys, source = '收藏数据') {
+  if (!Array.isArray(keys)) throw new Error(`${source}格式无效`)
+
+  const collection = new Set()
+  for (const key of keys) {
+    if (typeof key !== 'string' || !validSlotKeys.has(key) || collection.has(key)) {
+      throw new Error(`${source}包含无效箱位`)
+    }
+    collection.add(key)
+  }
+  return collection
+}
+
+function loadPendingChanges() {
+  try {
+    return parsePendingChanges(window.localStorage.getItem(PENDING_STORAGE_KEY), validSlotKeys)
+  } catch {
+    return new Map()
+  }
+}
+
+function persistPendingChanges(changes) {
+  try {
+    if (changes.size) {
+      window.localStorage.setItem(PENDING_STORAGE_KEY, serializePendingChanges(changes))
+    } else {
+      window.localStorage.removeItem(PENDING_STORAGE_KEY)
+    }
+  } catch {
+    // Browsers can disable storage; the current session still remains usable.
+  }
+}
+
+function loadLocalState() {
+  let collection
   try {
     const stored = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '[]')
-    if (!Array.isArray(stored)) return new Set()
-    return new Set(stored.filter((key) => typeof key === 'string' && validSlotKeys.has(key)))
+    collection = Array.isArray(stored)
+      ? new Set(stored.filter((key) => typeof key === 'string' && validSlotKeys.has(key)))
+      : new Set()
   } catch {
-    return new Set()
+    collection = new Set()
   }
+
+  const pendingChanges = loadPendingChanges()
+  for (const [key, change] of pendingChanges) {
+    if (change.collected) collection.add(key)
+    else collection.delete(key)
+  }
+  return { collection, pendingChanges }
+}
+
+function downloadCollection(collection) {
+  const content = JSON.stringify(
+    {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      keys: [...collection],
+    },
+    null,
+    2,
+  )
+  const url = URL.createObjectURL(new Blob([content], { type: 'application/json' }))
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `pokemon-home-collection-${new Date().toISOString().slice(0, 10)}.json`
+  link.click()
+  window.setTimeout(() => URL.revokeObjectURL(url), 0)
+}
+
+async function collectionFromBackup(file) {
+  if (!file || file.size > 256 * 1024) throw new Error('备份文件无效或超过 256 KB')
+
+  let parsed
+  try {
+    parsed = JSON.parse(await file.text())
+  } catch {
+    throw new Error('备份文件不是有效的 JSON')
+  }
+  return collectionFromKeys(Array.isArray(parsed) ? parsed : parsed?.keys, '备份文件')
 }
 
 function displayName(entry) {
@@ -435,7 +515,152 @@ function EntryDialog({ entry, collected, onToggle, onClose }) {
   )
 }
 
+function LoginScreen({ localCount, busy, error, onLogin, onExport }) {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  return (
+    <div className="app-shell sync-shell">
+      <main className="sync-card" aria-labelledby="sync-login-title">
+        <div className="brand-mark" aria-hidden="true">
+          <BoxIcon />
+        </div>
+        <p className="eyebrow">COLLECTION SYNC</p>
+        <h1 id="sync-login-title">登录收藏同步</h1>
+        <p className="sync-card-description">
+          登录后，收集状态会安全地保存在服务器，并在不同设备间同步。
+        </p>
+
+        <form
+          className="sync-form"
+          onSubmit={async (event) => {
+            event.preventDefault()
+            await onLogin(username, password)
+          }}
+        >
+          <label htmlFor="sync-username">用户名</label>
+          <input
+            id="sync-username"
+            name="username"
+            autoComplete="username"
+            required
+            maxLength="64"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+          />
+          <label htmlFor="sync-password">密码</label>
+          <input
+            id="sync-password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            maxLength="256"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
+          {error && <p className="sync-error" role="alert">{error}</p>}
+          <button className="sync-primary-button" type="submit" disabled={busy}>
+            {busy ? '正在登录…' : '登录'}
+          </button>
+        </form>
+
+        {localCount > 0 && (
+          <aside className="local-backup-note">
+            <div>
+              <strong>检测到本机有 {localCount} 项收藏</strong>
+              <p>首次登录后可将它们导入服务器；也可以先下载备份。</p>
+            </div>
+            <button type="button" onClick={onExport}>导出本机备份</button>
+          </aside>
+        )}
+      </main>
+    </div>
+  )
+}
+
+function MigrationScreen({
+  username,
+  localCount,
+  busy,
+  error,
+  onImport,
+  onUpload,
+  onStartEmpty,
+  onLogout,
+}) {
+  return (
+    <div className="app-shell sync-shell">
+      <main className="sync-card" aria-labelledby="sync-migration-title">
+        <div className="brand-mark" aria-hidden="true">
+          <BoxIcon />
+        </div>
+        <p className="eyebrow">首次同步 · {username}</p>
+        <h1 id="sync-migration-title">初始化服务器收藏</h1>
+        <p className="sync-card-description">
+          服务器尚无收藏数据。你可以上传当前浏览器中的进度，或先导入从旧地址导出的备份。
+        </p>
+
+        <div className="migration-summary" aria-live="polite">
+          当前待上传 <strong>{localCount.toLocaleString('zh-CN')}</strong> 项收藏
+        </div>
+
+        <div className="migration-actions">
+          <button className="sync-primary-button" type="button" disabled={busy} onClick={onUpload}>
+            {busy ? '正在上传…' : localCount ? `上传这 ${localCount} 项收藏` : '初始化空收藏'}
+          </button>
+          <label className="sync-secondary-button">
+            导入 JSON 备份
+            <input
+              type="file"
+              accept="application/json,.json"
+              disabled={busy}
+              onChange={async (event) => {
+                const file = event.target.files?.[0]
+                event.target.value = ''
+                if (file) await onImport(file)
+              }}
+            />
+          </label>
+          {localCount > 0 && (
+            <button className="sync-link-button" type="button" disabled={busy} onClick={onStartEmpty}>
+              忽略本机数据并从空白开始
+            </button>
+          )}
+          <button className="sync-link-button" type="button" disabled={busy} onClick={onLogout}>
+            退出登录
+          </button>
+        </div>
+        {error && <p className="sync-error" role="alert">{error}</p>}
+      </main>
+    </div>
+  )
+}
+
+function SyncStatusScreen({ title, description, error, onRetry, onLogout }) {
+  return (
+    <div className="app-shell sync-shell">
+      <main className="sync-card" aria-labelledby="sync-status-title">
+        <div className="brand-mark" aria-hidden="true">
+          <BoxIcon />
+        </div>
+        <p className="eyebrow">COLLECTION SYNC</p>
+        <h1 id="sync-status-title">{title}</h1>
+        <p className="sync-card-description">{description}</p>
+        {error && <p className="sync-error" role="alert">{error}</p>}
+        {(onRetry || onLogout) && (
+          <div className="migration-actions">
+            {onRetry && <button className="sync-primary-button" type="button" onClick={onRetry}>重试</button>}
+            {onLogout && <button className="sync-link-button" type="button" onClick={onLogout}>退出登录</button>}
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
+
 function App() {
+  const [initialLocalState] = useState(loadLocalState)
   const [activeBoxNumber, setActiveBoxNumber] = useState(1)
   const [selectedEntryKey, setSelectedEntryKey] = useState(null)
   const [highlightedEntryKey, setHighlightedEntryKey] = useState(null)
@@ -443,8 +668,21 @@ function App() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState('all')
   const [variantFilter, setVariantFilter] = useState('all')
-  const [collected, setCollected] = useState(loadCollection)
+  const [collected, setCollected] = useState(initialLocalState.collection)
+  const [account, setAccount] = useState({ status: 'checking', username: '' })
+  const [collectionReady, setCollectionReady] = useState(false)
+  const [migrationRequired, setMigrationRequired] = useState(false)
+  const [syncStatus, setSyncStatus] = useState('loading')
+  const [syncError, setSyncError] = useState('')
+  const [loginError, setLoginError] = useState('')
+  const [accountBusy, setAccountBusy] = useState(false)
   const boxViewportRef = useRef(null)
+  const collectedRef = useRef(collected)
+  const dirtySlotsRef = useRef(initialLocalState.pendingChanges)
+  const pendingChangesRef = useRef(0)
+  const syncQueueRef = useRef(Promise.resolve())
+  const serverVersionRef = useRef(-1)
+  const nextOperationIdRef = useRef(0)
 
   const currentBox = plan.boxes[activeBoxNumber - 1]
   const currentGeneration = plan.generations[currentBox.generation - 1]
@@ -457,6 +695,65 @@ function App() {
       // Browsers can disable storage; the current session still remains usable.
     }
   }, [collected])
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function restoreSession() {
+      let authenticated = false
+      try {
+        const session = await syncApi.session(controller.signal)
+        if (!session.authenticated) {
+          setAccount({ status: 'signed-out', username: '' })
+          setSyncStatus('idle')
+          return
+        }
+        authenticated = true
+        await loadRemoteCollection(session.username, controller.signal)
+      } catch (error) {
+        if (error.name === 'AbortError') return
+        if (error instanceof SyncApiError && error.status === 401) {
+          setAccount({ status: 'signed-out', username: '' })
+          setLoginError('登录已过期，请重新登录')
+          return
+        }
+        if (authenticated) {
+          setSyncStatus('error')
+          setSyncError(error.message || '无法读取服务器收藏数据')
+        } else {
+          setAccount({ status: 'signed-out', username: '' })
+          setLoginError(error.message || '无法连接收藏同步服务')
+        }
+      }
+    }
+
+    restoreSession()
+    return () => controller.abort()
+  }, [])
+
+  useEffect(() => {
+    if (account.status !== 'authenticated' || !collectionReady || migrationRequired) return undefined
+
+    const controller = new AbortController()
+    async function refreshWhenActive() {
+      if (document.visibilityState === 'hidden' || pendingChangesRef.current) return
+      try {
+        await refreshRemoteCollection(controller.signal)
+      } catch (error) {
+        if (error.name !== 'AbortError') handleSyncFailure(error)
+      }
+    }
+    const interval = window.setInterval(refreshWhenActive, 15_000)
+    window.addEventListener('focus', refreshWhenActive)
+    document.addEventListener('visibilitychange', refreshWhenActive)
+
+    return () => {
+      controller.abort()
+      window.clearInterval(interval)
+      window.removeEventListener('focus', refreshWhenActive)
+      document.removeEventListener('visibilitychange', refreshWhenActive)
+    }
+  }, [account.status, collectionReady, migrationRequired])
 
   useEffect(() => {
     boxViewportRef.current?.scrollTo({ left: 0, behavior: 'smooth' })
@@ -495,14 +792,205 @@ function App() {
   ).length
   const progress = Math.round((collected.size / plan.slots.length) * 100)
 
+  function setCurrentCollection(next) {
+    collectedRef.current = next
+    setCollected(next)
+  }
+
+  function applyRemoteCollection(keys, version, force = false) {
+    if (!force && version < serverVersionRef.current) return false
+
+    const next = collectionFromKeys(keys, '服务器收藏数据')
+    for (const [key, change] of dirtySlotsRef.current) {
+      if (change.collected) next.add(key)
+      else next.delete(key)
+    }
+    serverVersionRef.current = version
+    setCurrentCollection(next)
+    return true
+  }
+
+  function handleSyncFailure(error) {
+    if (error instanceof SyncApiError && error.status === 401) {
+      setAccount({ status: 'signed-out', username: '' })
+      setCollectionReady(false)
+      setLoginError('登录已过期，本机未同步的修改仍已保留，请重新登录')
+    }
+    setSyncStatus('error')
+    setSyncError(error.message || '收藏同步失败')
+  }
+
+  async function refreshRemoteCollection(signal) {
+    const remote = await syncApi.collection(signal)
+    if (!remote.initialized) {
+      setMigrationRequired(true)
+      setCollectionReady(false)
+      setSyncStatus('idle')
+      return
+    }
+
+    applyRemoteCollection(remote.keys, remote.version)
+    if (!dirtySlotsRef.current.size) {
+      setSyncStatus('synced')
+      setSyncError('')
+    }
+  }
+
+  async function loadRemoteCollection(username, signal) {
+    setAccount({ status: 'authenticated', username })
+    setCollectionReady(false)
+    setMigrationRequired(false)
+    setSyncStatus('loading')
+    setSyncError('')
+
+    const remote = await syncApi.collection(signal)
+    if (!remote.initialized) {
+      setMigrationRequired(true)
+      setSyncStatus('idle')
+      return
+    }
+
+    applyRemoteCollection(remote.keys, remote.version, true)
+    setCollectionReady(true)
+    if (dirtySlotsRef.current.size) {
+      for (const [key, change] of [...dirtySlotsRef.current]) {
+        enqueueSlotSync(key, change.collected)
+      }
+    } else {
+      setSyncStatus('synced')
+    }
+  }
+
+  async function handleLogin(username, password) {
+    setAccountBusy(true)
+    setLoginError('')
+    let authenticated = false
+    try {
+      const session = await syncApi.login(username, password)
+      authenticated = true
+      await loadRemoteCollection(session.username)
+    } catch (error) {
+      if (authenticated) {
+        handleSyncFailure(error)
+      } else {
+        setAccount({ status: 'signed-out', username: '' })
+        setLoginError(error.message || '登录失败')
+      }
+    } finally {
+      setAccountBusy(false)
+    }
+  }
+
+  async function handleLogout() {
+    setAccountBusy(true)
+    setSyncError('')
+    try {
+      await syncQueueRef.current.catch(() => {})
+      if (dirtySlotsRef.current.size) {
+        throw new Error('仍有未同步的修改，请先重试同步后再退出')
+      }
+      await syncApi.logout()
+      setAccount({ status: 'signed-out', username: '' })
+      setCollectionReady(false)
+      setMigrationRequired(false)
+      setSyncStatus('idle')
+      serverVersionRef.current = -1
+    } catch (error) {
+      setSyncStatus('error')
+      setSyncError(error.message || '退出登录失败')
+    } finally {
+      setAccountBusy(false)
+    }
+  }
+
+  async function initializeServerCollection(keys) {
+    setAccountBusy(true)
+    setSyncError('')
+    try {
+      const remote = await syncApi.initializeCollection(keys)
+      dirtySlotsRef.current.clear()
+      persistPendingChanges(dirtySlotsRef.current)
+      applyRemoteCollection(remote.keys, remote.version, true)
+      setMigrationRequired(false)
+      setCollectionReady(true)
+      setSyncStatus('synced')
+    } catch (error) {
+      handleSyncFailure(error)
+    } finally {
+      setAccountBusy(false)
+    }
+  }
+
+  async function importMigrationBackup(file) {
+    setAccountBusy(true)
+    setSyncError('')
+    try {
+      setCurrentCollection(await collectionFromBackup(file))
+    } catch (error) {
+      setSyncError(error.message || '无法导入备份')
+    } finally {
+      setAccountBusy(false)
+    }
+  }
+
+  function enqueueSlotSync(key, isCollected) {
+    const operationId = ++nextOperationIdRef.current
+    recordPendingChange(dirtySlotsRef.current, key, isCollected, operationId)
+    persistPendingChanges(dirtySlotsRef.current)
+    pendingChangesRef.current += 1
+    setSyncStatus('syncing')
+
+    const operation = syncQueueRef.current
+      .catch(() => {})
+      .then(() => syncApi.updateSlot(key, isCollected))
+    syncQueueRef.current = operation
+
+    operation
+      .then((remote) => {
+        serverVersionRef.current = Math.max(serverVersionRef.current, remote.version)
+        if (acknowledgePendingChange(dirtySlotsRef.current, key, operationId)) {
+          persistPendingChanges(dirtySlotsRef.current)
+        }
+      })
+      .catch(handleSyncFailure)
+      .finally(() => {
+        pendingChangesRef.current -= 1
+        if (pendingChangesRef.current === 0) {
+          if (dirtySlotsRef.current.size) {
+            setSyncStatus('error')
+          } else {
+            setSyncStatus('synced')
+            setSyncError('')
+          }
+        }
+      })
+  }
+
+  async function retrySync() {
+    if (pendingChangesRef.current) return
+    if (dirtySlotsRef.current.size) {
+      for (const [key, change] of [...dirtySlotsRef.current]) {
+        enqueueSlotSync(key, change.collected)
+      }
+      return
+    }
+
+    setSyncStatus('syncing')
+    try {
+      await refreshRemoteCollection()
+    } catch (error) {
+      handleSyncFailure(error)
+    }
+  }
+
   function toggleCollected(slotKey) {
     if (!validSlotKeys.has(slotKey)) return
-    setCollected((current) => {
-      const next = new Set(current)
-      if (next.has(slotKey)) next.delete(slotKey)
-      else next.add(slotKey)
-      return next
-    })
+    const next = new Set(collectedRef.current)
+    const isCollected = !next.has(slotKey)
+    if (isCollected) next.add(slotKey)
+    else next.delete(slotKey)
+    setCurrentCollection(next)
+    enqueueSlotSync(slotKey, isCollected)
   }
 
   function goToBox(boxNumber) {
@@ -536,6 +1024,70 @@ function App() {
     return statusMismatch || variantMismatch
   }
 
+  if (account.status === 'checking') {
+    return (
+      <SyncStatusScreen
+        title="正在连接同步服务"
+        description="正在检查登录状态并读取服务器收藏数据…"
+      />
+    )
+  }
+
+  if (account.status === 'signed-out') {
+    return (
+      <LoginScreen
+        localCount={collected.size}
+        busy={accountBusy}
+        error={loginError}
+        onLogin={handleLogin}
+        onExport={() => downloadCollection(collectedRef.current)}
+      />
+    )
+  }
+
+  if (migrationRequired) {
+    return (
+      <MigrationScreen
+        username={account.username}
+        localCount={collected.size}
+        busy={accountBusy}
+        error={syncError}
+        onImport={importMigrationBackup}
+        onUpload={() => initializeServerCollection([...collectedRef.current])}
+        onStartEmpty={() => {
+          if (window.confirm('确定忽略当前浏览器中的收藏记录并从空白开始吗？')) {
+            initializeServerCollection([])
+          }
+        }}
+        onLogout={handleLogout}
+      />
+    )
+  }
+
+  if (!collectionReady) {
+    return (
+      <SyncStatusScreen
+        title={syncStatus === 'error' ? '无法读取收藏数据' : '正在读取收藏数据'}
+        description="本机缓存保持不变，连接恢复后可继续同步。"
+        error={syncError}
+        onRetry={async () => {
+          try {
+            await loadRemoteCollection(account.username)
+          } catch (error) {
+            handleSyncFailure(error)
+          }
+        }}
+        onLogout={handleLogout}
+      />
+    )
+  }
+
+  const syncStatusLabel = {
+    synced: '已同步',
+    syncing: '正在同步…',
+    error: '同步失败',
+  }[syncStatus] ?? '已连接'
+
   return (
     <div className="app-shell">
       <header className="hero">
@@ -551,6 +1103,25 @@ function App() {
             <p className="hero-description">
               普通与闪光左右相邻，按世代规划每一个 HOME 箱位。
             </p>
+            <div className="sync-account" aria-live="polite">
+              <span className="sync-indicator" data-status={syncStatus} aria-hidden="true" />
+              <span className="sync-account-copy">
+                <strong>{account.username}</strong>
+                <small>{syncStatusLabel}</small>
+              </span>
+              {syncStatus === 'error' && (
+                <button type="button" onClick={retrySync}>重试同步</button>
+              )}
+              <button type="button" onClick={() => downloadCollection(collectedRef.current)}>
+                导出备份
+              </button>
+              <button type="button" disabled={accountBusy} onClick={handleLogout}>
+                退出
+              </button>
+            </div>
+            {syncError && syncStatus === 'error' && (
+              <p className="hero-sync-error" role="alert">{syncError}</p>
+            )}
           </div>
         </div>
 
