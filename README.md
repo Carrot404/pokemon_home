@@ -2,69 +2,63 @@
 
 一个用于规划 Pokémon HOME 全国图鉴箱位的 React 网页。普通与闪光形态左右相邻，每代从新箱开始；单账户同步服务使用 SQLite 保存收藏状态，可跨设备使用。
 
-## 本地运行
-
-需要 Node.js 22.13 或更高版本。安装依赖并创建本地配置：
-
-```bash
-npm ci
-cp .env.example .env
-npm run password:hash
-```
-
-将最后一条命令输出的 `SYNC_PASSWORD_HASH=...` 填入 `.env`，并按需修改 `SYNC_USERNAME`。不要提交 `.env`。
-
-分别启动 API 和 Vite 开发服务器：
-
-```bash
-npm run server
-```
-
-```bash
-npm run dev
-```
-
-按终端提示打开 <http://localhost:5173>。Vite 会将 `/api` 代理到 <http://127.0.0.1:3000>；本地 SQLite 文件写入 `data/`。精灵图片来自远程 CDN，使用时需要联网。
-
-生产构建：
-
-```bash
-npm run build
-```
-
 ## Docker 部署
 
-首次部署前创建账户配置：
+运行只需要 Docker Engine 和 Docker Compose 插件，不需要在宿主机安装 Node.js 或 npm。
+
+首次部署时复制配置，并在一次性容器中生成密码哈希：
 
 ```bash
 cp .env.example .env
-npm run password:hash
+docker compose run --rm --build password_hash
 ```
 
-将生成的密码哈希填入 `.env`，然后构建并启动：
+将命令输出的完整 `SYNC_PASSWORD_HASH=...` 写入 `.env`，并按需修改 `SYNC_USERNAME`。不要提交 `.env`。然后构建并启动全部服务：
+
+```bash
+docker compose up -d --build
+docker compose ps
+```
+
+网页默认监听宿主机 `25173` 端口，可通过 <http://localhost:25173> 访问；如需修改端口，编辑 `.env` 中的 `HOST_PORT`。精灵图片来自远程 CDN，浏览器访问时需要联网。
+
+生产环境中，Nginx Proxy Manager 使用 `http` 协议转发到服务器 IP 的 `25173` 端口，并为正式域名启用 HTTPS。外部只有一个入口；Web 容器提供静态网页，并将 `/api` 转发给仅在 Docker 网络内开放的同步服务。
+
+查看日志：
+
+```bash
+docker compose logs -f
+```
+
+更新源码后重新构建即可，构建阶段会自动运行数据检查、服务测试和前端构建：
 
 ```bash
 docker compose up -d --build
 ```
 
-网页监听宿主机 `25173` 端口。Nginx Proxy Manager 使用 `http` 协议转发到服务器 IP 的 `25173` 端口，并为正式域名启用 HTTPS。外部仍只有一个入口；容器内 Nginx 提供静态网页，并将 `/api` 转发给同步服务。
+停止服务使用 `docker compose down`。SQLite 数据保存在 Docker volume `pokemon_home_data` 中，普通更新、停止或重建容器不会删除收藏数据；不要使用 `docker compose down -v`，除非确定需要删除数据库。
 
-SQLite 数据保存在 Docker volume `pokemon_home_data` 中。普通更新或重建容器不会删除收藏数据；不要使用 `docker compose down -v`，除非确定需要删除数据库。
-
-修改 `.env` 中的用户名或密码哈希并重新创建 API 容器，会使已有登录会话失效：
+修改账户密码时，重新运行密码生成容器，将新哈希写入 `.env`，再重新创建 API 容器。用户名或密码哈希变化会使已有登录会话失效：
 
 ```bash
+docker compose run --rm --build password_hash
 docker compose up -d --force-recreate pokemon_home_api
 ```
 
-### 迁移原有本地收藏
+### 迁移原有本机收藏
 
-1. 使用原来完全相同的本地地址（通常是 <http://localhost:5173>）打开更新后的网页。
-2. 在登录页点击“导出本机备份”。
+如果旧数据属于 <http://localhost:5173>，可在原电脑上临时让 Docker 部署监听同一来源：
+
+```bash
+HOST_PORT=5173 docker compose up -d --build
+```
+
+1. 打开 <http://localhost:5173>，在登录页点击“导出本机备份”。
+2. 运行 `docker compose down` 停止临时部署。
 3. 打开正式网站并登录。
 4. 首次同步页面选择“导入 JSON 备份”，确认数量后上传到服务器。
 
-服务器初始化后以 SQLite 数据为准；浏览器 `localStorage` 只保留一份本机缓存。在线设备每次修改都会立即提交，并在页面重新获得焦点或最多约 15 秒后读取其他设备的更新。
+如果原地址不同，应使用原来完全相同的协议、主机和端口。服务器初始化后以 SQLite 数据为准；浏览器 `localStorage` 只保留一份本机缓存。在线设备每次修改都会立即提交，并在页面重新获得焦点或最多约 15 秒后读取其他设备的更新。
 
 ## 收纳规则
 
@@ -108,16 +102,16 @@ docker compose up -d --force-recreate pokemon_home_api
 
 中文名称以 [52Poké 全国图鉴列表](https://wiki.52poke.com/wiki/%E5%AE%9D%E5%8F%AF%E6%A2%A6%E5%88%97%E8%A1%A8%EF%BC%88%E6%8C%89%E5%85%A8%E5%9B%BD%E5%9B%BE%E9%89%B4%E7%BC%96%E5%8F%B7%EF%BC%89) 校对；属性、分类与 HOME 风格精灵图路径来自 [PokéAPI](https://pokeapi.co/) 及 [PokeAPI/sprites](https://github.com/PokeAPI/sprites)。
 
-重新获取并生成静态数据：
+维护数据时可通过一次性 Node 容器重新获取并生成静态数据（需要联网）：
 
 ```bash
-npm run data:generate
+docker run --rm --mount type=bind,src="$PWD",dst=/app -w /app node:24-alpine npm run data:generate
 ```
 
-检查形态数量、排序、箱号、普通/闪光相邻规则，以及认证和 SQLite 持久化：
+构建 `build` 阶段会检查形态数量、排序、箱号、普通/闪光相邻规则、认证和 SQLite 持久化，并生成前端产物：
 
 ```bash
-npm test
+docker build --target build -t pokemon_home_build .
 ```
 
 本项目是非官方收藏辅助工具。宝可梦相关名称与图像版权归其各自权利人所有。

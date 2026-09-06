@@ -7,11 +7,7 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "vite",
-    "server": "node --env-file-if-exists=.env server/server.mjs",
     "build": "vite build",
-    "preview": "vite preview",
-    "password:hash": "node server/hash-password.mjs",
     "data:generate": "node scripts/generate-data.mjs",
     "data:check": "node scripts/check-data.mjs",
     "test:server": "node --test server/server.test.mjs",

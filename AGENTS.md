@@ -2,10 +2,11 @@
 
 ## 项目概览
 
-- React 19 + Vite 8 的纯静态中文网站，无后端。
-- 用途：规划 Pokémon HOME 全国图鉴箱位并通过 `localStorage` 记录收藏状态。
+- React 19 + Vite 8 中文网站，Node.js 同步服务通过 SQLite 保存单账户收藏状态。
+- 用途：规划 Pokémon HOME 全国图鉴箱位；`localStorage` 仅作为浏览器缓存。
 - 图片从 PokeAPI sprites CDN 加载；中文名以 52Poké 校对。
 - 目标站点：`https://pokemon.carrot404.de/`，部署在域名根路径。
+- 运行和部署统一使用 Docker Compose，宿主机不要求安装 Node.js 或 npm。
 
 ## 关键文件
 
@@ -13,8 +14,10 @@
 - `src/styles.css`：全部样式及移动端横向箱子布局。
 - `src/lib/boxPlanner.js`：箱位生成规则。
 - `src/data/pokemon.json`：生成后的静态数据。
+- `server/server.mjs`：认证、收藏同步和 SQLite 持久化。
 - `scripts/generate-data.mjs`：从 52Poké 与 PokéAPI 重新生成数据。
 - `scripts/check-data.mjs`：数据和箱位规则检查。
+- `Dockerfile`、`compose.yaml`、`nginx.conf`：构建、服务编排和统一入口。
 
 ## 不可破坏的数据规则
 
@@ -29,17 +32,22 @@
 
 ## 开发命令
 
+构建镜像的 `build` 阶段会安装依赖、运行全部测试并生成前端产物：
+
 ```bash
-npm ci
-npm run dev
-npm test
-npm run build
+docker build --target build -t pokemon_home_build .
+```
+
+启动完整环境：
+
+```bash
+docker compose up -d --build
 ```
 
 重新生成数据（需要联网）：
 
 ```bash
-npm run data:generate
+docker run --rm --mount type=bind,src="$PWD",dst=/app -w /app node:24-alpine npm run data:generate
 ```
 
 不要直接手改 `src/data/pokemon.json`；应修改生成脚本后重新生成。
@@ -50,8 +58,11 @@ npm run data:generate
 - 读取 `localStorage` 等外部数据时必须保留校验和异常处理。
 - 不提交 `node_modules/` 或 `dist/`，也不要写入密钥。
 - 避免无关重构、新依赖和后端功能。
-- 完成代码或数据修改后必须运行 `npm test` 和 `npm run build`。
+- 完成代码或数据修改后必须成功构建 `build` 阶段，以运行测试和前端构建。
 
 ## 部署
 
-`dist/` 是唯一部署产物，通过 `rsync` 同步到服务器 Web 根目录；源码由 Git 管理，构建产物不进入 Git。
+- 仅使用 `docker compose up -d --build` 部署，不通过 `rsync` 或宿主机 Node.js 直接运行。
+- Web 容器是唯一外部入口；API 仅在 Docker 网络中开放。
+- SQLite 数据必须保存在 `pokemon_home_data` volume；不得在普通更新中执行 `docker compose down -v`。
+- 源码由 Git 管理，`dist/` 和 `.env` 不进入 Git。

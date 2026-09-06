@@ -60,13 +60,17 @@ function decodePasswordHash(encodedHash) {
     !/^[\w-]+$/.test(digestText ?? '') ||
     extra.length
   ) {
-    throw new Error('SYNC_PASSWORD_HASH 格式无效，请运行 npm run password:hash 重新生成')
+    throw new Error(
+      'SYNC_PASSWORD_HASH 格式无效，请运行 docker compose run --rm --build password_hash 重新生成',
+    )
   }
 
   const salt = Buffer.from(saltText, 'base64url')
   const digest = Buffer.from(digestText, 'base64url')
   if (salt.length !== 16 || digest.length !== PASSWORD_HASH_BYTES) {
-    throw new Error('SYNC_PASSWORD_HASH 格式无效，请运行 npm run password:hash 重新生成')
+    throw new Error(
+      'SYNC_PASSWORD_HASH 格式无效，请运行 docker compose run --rm --build password_hash 重新生成',
+    )
   }
 
   return { salt, digest }

@@ -15,7 +15,7 @@ ENV PORT=3000
 WORKDIR /app
 
 COPY package.json ./
-COPY --chown=node:node server/server.mjs ./server/server.mjs
+COPY --chown=node:node server/server.mjs server/hash-password.mjs ./server/
 COPY --chown=node:node src/lib/boxPlanner.js ./src/lib/boxPlanner.js
 COPY --chown=node:node src/data/pokemon.json ./src/data/pokemon.json
 
@@ -27,6 +27,10 @@ HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=5 \
   CMD wget -q -O /dev/null http://127.0.0.1:3000/api/health || exit 1
 
 CMD ["node", "server/server.mjs"]
+
+FROM api AS password-hash
+
+ENTRYPOINT ["node", "server/hash-password.mjs"]
 
 FROM nginx:1.28-alpine AS web
 

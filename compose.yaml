@@ -9,10 +9,20 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_PATH: /data/pokemon_home.sqlite
-      SYNC_USERNAME: ${SYNC_USERNAME:?请在 .env 中设置 SYNC_USERNAME}
-      SYNC_PASSWORD_HASH: ${SYNC_PASSWORD_HASH:?请在 .env 中设置 SYNC_PASSWORD_HASH}
+      SYNC_USERNAME: ${SYNC_USERNAME:-}
+      SYNC_PASSWORD_HASH: ${SYNC_PASSWORD_HASH:-}
     volumes:
       - pokemon_home_data:/data
+
+  password_hash:
+    build:
+      context: .
+      target: password-hash
+    image: pokemon_home_password_hash:latest
+    profiles:
+      - tools
+    stdin_open: true
+    tty: true
 
   pokemon_home:
     build:
