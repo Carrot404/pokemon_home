@@ -4,6 +4,7 @@ import {
   GENERATION_NAMES,
   buildBoxPlan,
   formatNationalId,
+  getItemSpriteUrl,
   getSpriteUrl,
   getWikiUrl,
 } from './lib/boxPlanner.js'
@@ -13,6 +14,7 @@ const entriesByKey = new Map(pokemonData.entries.map((entry) => [entry.key, entr
 const validSlotKeys = new Set(plan.slots.map((slot) => slot.key))
 const STORAGE_KEY = 'pokemon-home-box-guide:collection:v1'
 const PLACEHOLDER_IMAGE = `${import.meta.env.BASE_URL}pokemon-placeholder.svg`
+const KEY_STONE_IMAGE = getItemSpriteUrl('key-stone')
 
 const STATUS_FILTERS = [
   { id: 'all', label: '全部' },
@@ -44,6 +46,16 @@ function handleImageError(event) {
   if (event.currentTarget.dataset.fallback === 'true') return
   event.currentTarget.dataset.fallback = 'true'
   event.currentTarget.src = PLACEHOLDER_IMAGE
+}
+
+function handleStoneImageError(event) {
+  if (event.currentTarget.dataset.fallback === 'true') return
+  event.currentTarget.dataset.fallback = 'true'
+  event.currentTarget.src = KEY_STONE_IMAGE
+}
+
+function uniqueMegaStones(megaForms = []) {
+  return [...new Map(megaForms.map((form) => [form.stone.slug, form.stone])).values()]
 }
 
 function SearchIcon() {
@@ -140,6 +152,28 @@ function TypeBadge({ type }) {
   )
 }
 
+function MegaStoneMark({ megaForms }) {
+  const stones = uniqueMegaStones(megaForms)
+  if (!stones.length) return null
+
+  return (
+    <span
+      className="mega-stone-mark"
+      title={stones.map((stone) => stone.name).join('、')}
+      aria-hidden="true"
+    >
+      {stones.map((stone) => (
+        <img
+          key={stone.slug}
+          src={getItemSpriteUrl(stone.spriteSlug)}
+          alt=""
+          onError={handleStoneImageError}
+        />
+      ))}
+    </span>
+  )
+}
+
 function PokemonSlot({ slot, isCollected, isMuted, isHighlighted, onOpen, onToggle }) {
   const { entry, isShiny } = slot
   const name = displayName(entry)
@@ -155,13 +189,14 @@ function PokemonSlot({ slot, isCollected, isMuted, isHighlighted, onOpen, onTogg
         className="slot-main"
         type="button"
         onClick={() => onOpen(entry.key)}
-        aria-label={`${name}，${slot.label}，箱子 ${slot.boxNumber} 第 ${slot.position} 格，查看详情`}
+        aria-label={`${name}，${slot.label}，箱子 ${slot.boxNumber} 第 ${slot.position} 格${entry.megaForms?.length ? '，可以超级进化' : ''}，查看详情`}
       >
         <span className="slot-meta">
           <span className="slot-dex-number">{formatNationalId(entry.nationalId)}</span>
           <span className="slot-position">{String(slot.position).padStart(2, '0')}</span>
         </span>
         <span className="slot-image-wrap">
+          <MegaStoneMark megaForms={entry.megaForms} />
           {isShiny && (
             <span className="shiny-mark" aria-label="闪光">
               <SparkleIcon />
@@ -207,6 +242,79 @@ function EmptySlot({ position }) {
       <div className="empty-slot-mark" aria-hidden="true" />
       <small>留空</small>
     </div>
+  )
+}
+
+function MegaGallery({ megaForms }) {
+  if (!megaForms?.length) return null
+
+  return (
+    <section className="mega-gallery" aria-labelledby="mega-gallery-title">
+      <header className="mega-gallery-header">
+        <div className="mega-gallery-symbol" aria-hidden="true">
+          <img src={KEY_STONE_IMAGE} alt="" onError={handleStoneImageError} />
+        </div>
+        <div>
+          <span>MEGA EVOLUTION</span>
+          <h3 id="mega-gallery-title">超级进化形态</h3>
+          <p>战斗中的暂时形态，不占用 HOME 箱位，也不计入收藏进度。</p>
+        </div>
+        <strong>{megaForms.length} 种</strong>
+      </header>
+
+      <div className="mega-gallery-grid">
+        {megaForms.map((megaForm) => (
+          <article className="mega-form-card" key={megaForm.key}>
+            <header>
+              <div>
+                <h4>{megaForm.name}</h4>
+                <div className="type-list">
+                  {megaForm.types.map((type) => (
+                    <TypeBadge key={type} type={type} />
+                  ))}
+                </div>
+              </div>
+              <div className="mega-stone-detail" title={megaForm.stone.name}>
+                <img
+                  src={getItemSpriteUrl(megaForm.stone.spriteSlug)}
+                  alt={`${megaForm.stone.name}图标`}
+                  onError={handleStoneImageError}
+                />
+                <span>{megaForm.stone.name}</span>
+              </div>
+            </header>
+
+            <div className="mega-image-pair">
+              <figure>
+                <div className="mega-image-wrap">
+                  <img
+                    src={getSpriteUrl(megaForm.imageId, false)}
+                    alt={`${megaForm.name}普通形态`}
+                    loading="lazy"
+                    onError={handleImageError}
+                  />
+                </div>
+                <figcaption>普通</figcaption>
+              </figure>
+              <figure className="is-shiny">
+                <div className="mega-image-wrap">
+                  <span className="mega-shiny-mark" aria-hidden="true">
+                    <SparkleIcon />
+                  </span>
+                  <img
+                    src={getSpriteUrl(megaForm.imageId, true)}
+                    alt={`${megaForm.name}闪光形态`}
+                    loading="lazy"
+                    onError={handleImageError}
+                  />
+                </div>
+                <figcaption>闪光</figcaption>
+              </figure>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -309,6 +417,8 @@ function EntryDialog({ entry, collected, onToggle, onClose }) {
               )
             })}
           </div>
+
+          <MegaGallery megaForms={entry.megaForms} />
 
           <a
             className="source-link"

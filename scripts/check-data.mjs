@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { buildBoxPlan, getSpriteUrl } from '../src/lib/boxPlanner.js'
+import {
+  buildBoxPlan,
+  getItemSpriteUrl,
+  getSpriteUrl,
+} from '../src/lib/boxPlanner.js'
 
 const data = JSON.parse(
   await readFile(new URL('../src/data/pokemon.json', import.meta.url), 'utf8'),
@@ -25,6 +29,29 @@ assert.equal(new Set(data.entries.map((entry) => entry.key)).size, data.entries.
 assert.equal(plan.boxes.length, 77)
 assert.equal(plan.slots.length, 2164)
 assert.equal(plan.slotByKey.size, plan.slots.length)
+
+const entriesWithMega = data.entries.filter((entry) => entry.megaForms?.length)
+const megaForms = entriesWithMega.flatMap((entry) => entry.megaForms)
+assert.equal(entriesWithMega.length, 87, '应标记 87 个可 Mega 进化的种族')
+assert.equal(megaForms.length, 97, '应包含 97 个 Mega 图片形态')
+assert.equal(new Set(megaForms.map((form) => form.key)).size, megaForms.length)
+assert.equal(
+  data.entries.some((entry) => entry.formLabel && entry.megaForms?.length),
+  false,
+  '地区形态不应继承默认形态的 Mega 数据',
+)
+
+for (const megaForm of megaForms) {
+  assert.match(megaForm.key, /-mega(?:-[xyz])?$/)
+  assert.ok(megaForm.name.startsWith('超级'))
+  assert.ok(megaForm.types.length >= 1 && megaForm.types.length <= 2)
+  assert.ok(megaForm.stone.name)
+  assert.ok(megaForm.stone.slug)
+  assert.ok(megaForm.stone.spriteSlug)
+  assert.match(getSpriteUrl(megaForm.imageId, false), /\/home\/\d+\.png$/)
+  assert.match(getSpriteUrl(megaForm.imageId, true), /\/home\/shiny\/\d+\.png$/)
+  assert.match(getItemSpriteUrl(megaForm.stone.spriteSlug), /\/items\/[\w-]+\.png$/)
+}
 
 for (const [index, generation] of plan.generations.entries()) {
   assert.deepEqual(
@@ -76,4 +103,17 @@ assert.equal(nameByNationalId.get(233), '多边兽Ⅱ')
 assert.equal(nameByNationalId.get(563), '死神棺')
 assert.equal(nameByNationalId.get(1025), '桃歹郎')
 
-console.log('数据检查通过：1082 个形态，2164 个有效箱位，77 个箱子。')
+const defaultEntry = (nationalId) =>
+  data.entries.find((entry) => entry.nationalId === nationalId && !entry.formLabel)
+assert.deepEqual(
+  defaultEntry(6).megaForms.map((form) => form.name),
+  ['超级喷火龙Ｘ', '超级喷火龙Ｙ'],
+)
+assert.equal(defaultEntry(3).megaForms[0].stone.spriteSlug, 'venusaurite')
+assert.equal(defaultEntry(26).megaForms[0].stone.spriteSlug, 'key-stone')
+assert.equal(defaultEntry(801).megaForms.length, 2)
+assert.equal(defaultEntry(978).megaForms.length, 3)
+
+console.log(
+  '数据检查通过：1082 个 HOME 形态，2164 个有效箱位，77 个箱子；97 个 Mega 展示形态。',
+)

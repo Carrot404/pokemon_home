@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 
 const MAX_NATIONAL_ID = 1025
+const FIRST_ZA_MEGA_ID = 10278
 const SIMPLIFIED_CHINESE_LANGUAGE_ID = '12'
 
 const SOURCES = {
@@ -12,6 +13,8 @@ const SOURCES = {
     'https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/pokemon_types.csv',
   typeNames:
     'https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/type_names.csv',
+  items:
+    'https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/items.csv',
   wikiList:
     'https://wiki.52poke.com/wiki/%E5%AE%9D%E5%8F%AF%E6%A2%A6%E5%88%97%E8%A1%A8%EF%BC%88%E6%8C%89%E5%85%A8%E5%9B%BD%E5%9B%BE%E9%89%B4%E7%BC%96%E5%8F%B7%EF%BC%89',
   wikiApi: 'https://wiki.52poke.com/api.php',
@@ -82,6 +85,106 @@ const REGIONAL_FORMS = [
   formLabel,
   formOrder: formOrder + 1,
 }))
+
+const MEGA_STONE_BY_FORM = {
+  'venusaur-mega': 'venusaurite',
+  'charizard-mega-x': 'charizardite-x',
+  'charizard-mega-y': 'charizardite-y',
+  'blastoise-mega': 'blastoisinite',
+  'alakazam-mega': 'alakazite',
+  'gengar-mega': 'gengarite',
+  'kangaskhan-mega': 'kangaskhanite',
+  'pinsir-mega': 'pinsirite',
+  'gyarados-mega': 'gyaradosite',
+  'aerodactyl-mega': 'aerodactylite',
+  'mewtwo-mega-x': 'mewtwonite-x',
+  'mewtwo-mega-y': 'mewtwonite-y',
+  'ampharos-mega': 'ampharosite',
+  'scizor-mega': 'scizorite',
+  'heracross-mega': 'heracronite',
+  'houndoom-mega': 'houndoominite',
+  'tyranitar-mega': 'tyranitarite',
+  'blaziken-mega': 'blazikenite',
+  'gardevoir-mega': 'gardevoirite',
+  'mawile-mega': 'mawilite',
+  'aggron-mega': 'aggronite',
+  'medicham-mega': 'medichamite',
+  'manectric-mega': 'manectite',
+  'banette-mega': 'banettite',
+  'absol-mega': 'absolite',
+  'garchomp-mega': 'garchompite',
+  'lucario-mega': 'lucarionite',
+  'abomasnow-mega': 'abomasite',
+  'latias-mega': 'latiasite',
+  'latios-mega': 'latiosite',
+  'swampert-mega': 'swampertite',
+  'sceptile-mega': 'sceptilite',
+  'sableye-mega': 'sablenite',
+  'altaria-mega': 'altarianite',
+  'gallade-mega': 'galladite',
+  'audino-mega': 'audinite',
+  'sharpedo-mega': 'sharpedonite',
+  'slowbro-mega': 'slowbronite',
+  'steelix-mega': 'steelixite',
+  'pidgeot-mega': 'pidgeotite',
+  'glalie-mega': 'glalitite',
+  'diancie-mega': 'diancite',
+  'metagross-mega': 'metagrossite',
+  'rayquaza-mega': 'key-stone',
+  'camerupt-mega': 'cameruptite',
+  'lopunny-mega': 'lopunnite',
+  'salamence-mega': 'salamencite',
+  'beedrill-mega': 'beedrillite',
+  'clefable-mega': 'clefablite',
+  'victreebel-mega': 'victreebelite',
+  'starmie-mega': 'starminite',
+  'dragonite-mega': 'dragoninite',
+  'meganium-mega': 'meganiumite',
+  'feraligatr-mega': 'feraligite',
+  'skarmory-mega': 'skarmorite',
+  'froslass-mega': 'froslassite',
+  'emboar-mega': 'emboarite',
+  'excadrill-mega': 'excadrite',
+  'scolipede-mega': 'scolipite',
+  'scrafty-mega': 'scraftinite',
+  'eelektross-mega': 'eelektrossite',
+  'chandelure-mega': 'chandelurite',
+  'chesnaught-mega': 'chesnaughtite',
+  'delphox-mega': 'delphoxite',
+  'greninja-mega': 'greninjite',
+  'pyroar-mega': 'pyroarite',
+  'floette-mega': 'floettite',
+  'malamar-mega': 'malamarite',
+  'barbaracle-mega': 'barbaracite',
+  'dragalge-mega': 'dragalgite',
+  'hawlucha-mega': 'hawluchanite',
+  'zygarde-mega': 'zygardite',
+  'drampa-mega': 'drampanite',
+  'falinks-mega': 'falinksite',
+  'raichu-mega-x': 'raichunite-x',
+  'raichu-mega-y': 'raichunite-y',
+  'chimecho-mega': 'chimechite',
+  'absol-mega-z': 'absolite-z',
+  'staraptor-mega': 'staraptite',
+  'garchomp-mega-z': 'garchompite-z',
+  'lucario-mega-z': 'lucarionite-z',
+  'heatran-mega': 'heatranite',
+  'darkrai-mega': 'darkranite',
+  'golurk-mega': 'golurkite',
+  'meowstic-male-mega': 'meowsticite',
+  'crabominable-mega': 'crabominite',
+  'golisopod-mega': 'golisopite',
+  'magearna-mega': 'magearnite',
+  'magearna-original-mega': 'magearnite',
+  'zeraora-mega': 'zeraorite',
+  'scovillain-mega': 'scovillainite',
+  'glimmora-mega': 'glimmoranite',
+  'tatsugiri-curly-mega': 'tatsugirinite',
+  'tatsugiri-droopy-mega': 'tatsugirinite',
+  'tatsugiri-stretchy-mega': 'tatsugirinite',
+  'baxcalibur-mega': 'baxcalibrite',
+  'meowstic-female-mega': 'meowsticite',
+}
 
 function parseCsv(text) {
   const rows = []
@@ -212,14 +315,40 @@ function typesForPokemon(pokemonId, pokemonTypeRows, typeNames) {
   return types
 }
 
+function megaFormName(identifier, name) {
+  const specialNames = {
+    'meowstic-male-mega': `超级${name}（雄性的样子）`,
+    'meowstic-female-mega': `超级${name}（雌性的样子）`,
+    'magearna-mega': `超级${name}（现在的颜色）`,
+    'magearna-original-mega': `超级${name}（500年前的颜色）`,
+    'tatsugiri-curly-mega': `超级${name}（上弓姿势）`,
+    'tatsugiri-droopy-mega': `超级${name}（下垂姿势）`,
+    'tatsugiri-stretchy-mega': `超级${name}（平挺姿势）`,
+  }
+  if (specialNames[identifier]) return specialNames[identifier]
+  if (identifier.endsWith('-mega-x')) return `超级${name}Ｘ`
+  if (identifier.endsWith('-mega-y')) return `超级${name}Ｙ`
+  if (identifier.endsWith('-mega-z')) return `超级${name}Ｚ`
+  return `超级${name}`
+}
+
+function megaStoneName(identifier, name, stoneSlug) {
+  if (stoneSlug === 'key-stone') return '无需超级进化石'
+  if (identifier.endsWith('-mega-x')) return `${name}进化石Ｘ`
+  if (identifier.endsWith('-mega-y')) return `${name}进化石Ｙ`
+  if (identifier.endsWith('-mega-z')) return `${name}进化石Ｚ`
+  return `${name}进化石`
+}
+
 async function main() {
   console.log('正在下载 PokéAPI CSV 与 52Poké 全国图鉴列表…')
-  const [speciesNamesText, pokemonText, pokemonTypesText, typeNamesText, wikiHtml] =
+  const [speciesNamesText, pokemonText, pokemonTypesText, typeNamesText, itemsText, wikiHtml] =
     await Promise.all([
       fetchText(SOURCES.speciesNames),
       fetchText(SOURCES.pokemon),
       fetchText(SOURCES.pokemonTypes),
       fetchText(SOURCES.typeNames),
+      fetchText(SOURCES.items),
       fetchText(SOURCES.wikiList),
     ])
 
@@ -230,6 +359,7 @@ async function main() {
   )
   const pokemonRows = parseCsv(pokemonText)
   const pokemonTypeRows = parseCsv(pokemonTypesText)
+  const itemIdentifiers = new Set(parseCsv(itemsText).map((row) => row.identifier))
   const typeNames = new Map(
     parseCsv(typeNamesText)
       .filter((row) => row.local_language_id === SIMPLIFIED_CHINESE_LANGUAGE_ID)
@@ -263,6 +393,41 @@ async function main() {
     ),
   )
 
+  const megaFormsBySpecies = new Map()
+  const megaPokemonRows = pokemonRows
+    .filter(
+      (row) =>
+        row.identifier.includes('-mega') && Number(row.species_id) <= MAX_NATIONAL_ID,
+    )
+    .sort((left, right) => Number(left.id) - Number(right.id))
+
+  for (const pokemon of megaPokemonRows) {
+    const nationalId = Number(pokemon.species_id)
+    const name = wikiNames.get(nationalId)
+    const stoneSlug = MEGA_STONE_BY_FORM[pokemon.identifier]
+
+    if (!stoneSlug) throw new Error(`缺少 Mega 进化石映射：${pokemon.identifier}`)
+    if (!itemIdentifiers.has(stoneSlug)) throw new Error(`PokéAPI 缺少道具：${stoneSlug}`)
+
+    const megaForm = {
+      key: pokemon.identifier,
+      name: megaFormName(pokemon.identifier, name),
+      imageId: Number(pokemon.id),
+      types: typesForPokemon(Number(pokemon.id), pokemonTypeRows, typeNames),
+      stone: {
+        name: megaStoneName(pokemon.identifier, name, stoneSlug),
+        slug: stoneSlug,
+        spriteSlug:
+          Number(pokemon.id) < FIRST_ZA_MEGA_ID || stoneSlug === 'key-stone'
+            ? stoneSlug
+            : 'key-stone',
+      },
+    }
+    const speciesMegaForms = megaFormsBySpecies.get(nationalId) ?? []
+    speciesMegaForms.push(megaForm)
+    megaFormsBySpecies.set(nationalId, speciesMegaForms)
+  }
+
   const defaultEntries = Array.from({ length: MAX_NATIONAL_ID }, (_, index) => {
     const nationalId = index + 1
     const pokemon = defaultPokemonBySpecies.get(nationalId)
@@ -280,6 +445,9 @@ async function main() {
       imageId: Number(pokemon.id),
       category: species.genus || wikiCategories.get(nationalId),
       types: typesForPokemon(Number(pokemon.id), pokemonTypeRows, typeNames),
+      ...(megaFormsBySpecies.has(nationalId)
+        ? { megaForms: megaFormsBySpecies.get(nationalId) }
+        : {}),
     }
   })
 
@@ -320,7 +488,7 @@ async function main() {
   ).length
 
   const output = {
-    version: 1,
+    version: 2,
     coverage: { firstNationalId: 1, lastNationalId: MAX_NATIONAL_ID },
     sources: {
       names: SOURCES.wikiList,
@@ -338,6 +506,7 @@ async function main() {
 
   console.log(
     `已生成 ${defaultEntries.length} 个默认形态＋${regionalEntries.length} 个地区形态；` +
+      `${megaFormsBySpecies.size} 个种族包含 ${megaPokemonRows.length} 个 Mega 展示形态；` +
       `52Poké 校正 ${correctedNameCount} 个名称。`,
   )
 }

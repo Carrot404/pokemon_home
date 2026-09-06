@@ -21,6 +21,8 @@ export const VARIANTS = Object.freeze([
 
 const SPRITE_ROOT =
   'https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/other/home'
+const ITEM_SPRITE_ROOT =
+  'https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/items'
 
 export function formatNationalId(nationalId) {
   return `#${String(nationalId).padStart(4, '0')}`
@@ -28,6 +30,10 @@ export function formatNationalId(nationalId) {
 
 export function getSpriteUrl(imageId, isShiny) {
   return `${SPRITE_ROOT}${isShiny ? '/shiny' : ''}/${imageId}.png`
+}
+
+export function getItemSpriteUrl(itemSlug) {
+  return `${ITEM_SPRITE_ROOT}/${itemSlug}.png`
 }
 
 export function getWikiUrl(name) {

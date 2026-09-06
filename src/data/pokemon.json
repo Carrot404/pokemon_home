@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "coverage": {
     "firstNationalId": 1,
     "lastNationalId": 1025
@@ -56,6 +56,22 @@
       "types": [
         "草",
         "毒"
+      ],
+      "megaForms": [
+        {
+          "key": "venusaur-mega",
+          "name": "超级妙蛙花",
+          "imageId": 10033,
+          "types": [
+            "草",
+            "毒"
+          ],
+          "stone": {
+            "name": "妙蛙花进化石",
+            "slug": "venusaurite",
+            "spriteSlug": "venusaurite"
+          }
+        }
       ]
     },
     {
@@ -102,6 +118,36 @@
       "types": [
         "火",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "charizard-mega-x",
+          "name": "超级喷火龙Ｘ",
+          "imageId": 10034,
+          "types": [
+            "火",
+            "龙"
+          ],
+          "stone": {
+            "name": "喷火龙进化石Ｘ",
+            "slug": "charizardite-x",
+            "spriteSlug": "charizardite-x"
+          }
+        },
+        {
+          "key": "charizard-mega-y",
+          "name": "超级喷火龙Ｙ",
+          "imageId": 10035,
+          "types": [
+            "火",
+            "飞行"
+          ],
+          "stone": {
+            "name": "喷火龙进化石Ｙ",
+            "slug": "charizardite-y",
+            "spriteSlug": "charizardite-y"
+          }
+        }
       ]
     },
     {
@@ -147,6 +193,21 @@
       "category": "甲壳宝可梦",
       "types": [
         "水"
+      ],
+      "megaForms": [
+        {
+          "key": "blastoise-mega",
+          "name": "超级水箭龟",
+          "imageId": 10036,
+          "types": [
+            "水"
+          ],
+          "stone": {
+            "name": "水箭龟进化石",
+            "slug": "blastoisinite",
+            "spriteSlug": "blastoisinite"
+          }
+        }
       ]
     },
     {
@@ -241,6 +302,22 @@
       "types": [
         "虫",
         "毒"
+      ],
+      "megaForms": [
+        {
+          "key": "beedrill-mega",
+          "name": "超级大针蜂",
+          "imageId": 10090,
+          "types": [
+            "虫",
+            "毒"
+          ],
+          "stone": {
+            "name": "大针蜂进化石",
+            "slug": "beedrillite",
+            "spriteSlug": "beedrillite"
+          }
+        }
       ]
     },
     {
@@ -289,6 +366,22 @@
       "types": [
         "一般",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "pidgeot-mega",
+          "name": "超级大比鸟",
+          "imageId": 10073,
+          "types": [
+            "一般",
+            "飞行"
+          ],
+          "stone": {
+            "name": "大比鸟进化石",
+            "slug": "pidgeotite",
+            "spriteSlug": "pidgeotite"
+          }
+        }
       ]
     },
     {
@@ -411,6 +504,34 @@
       "category": "鼠宝可梦",
       "types": [
         "电"
+      ],
+      "megaForms": [
+        {
+          "key": "raichu-mega-x",
+          "name": "超级雷丘Ｘ",
+          "imageId": 10304,
+          "types": [
+            "电"
+          ],
+          "stone": {
+            "name": "雷丘进化石Ｘ",
+            "slug": "raichunite-x",
+            "spriteSlug": "key-stone"
+          }
+        },
+        {
+          "key": "raichu-mega-y",
+          "name": "超级雷丘Ｙ",
+          "imageId": 10305,
+          "types": [
+            "电"
+          ],
+          "stone": {
+            "name": "雷丘进化石Ｙ",
+            "slug": "raichunite-y",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -563,6 +684,22 @@
       "category": "妖精宝可梦",
       "types": [
         "妖精"
+      ],
+      "megaForms": [
+        {
+          "key": "clefable-mega",
+          "name": "超级皮可西",
+          "imageId": 10278,
+          "types": [
+            "妖精",
+            "飞行"
+          ],
+          "stone": {
+            "name": "皮可西进化石",
+            "slug": "clefablite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -1010,6 +1147,21 @@
       "category": "念力宝可梦",
       "types": [
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "alakazam-mega",
+          "name": "超级胡地",
+          "imageId": 10037,
+          "types": [
+            "超能力"
+          ],
+          "stone": {
+            "name": "胡地进化石",
+            "slug": "alakazite",
+            "spriteSlug": "alakazite"
+          }
+        }
       ]
     },
     {
@@ -1103,6 +1255,22 @@
       "types": [
         "草",
         "毒"
+      ],
+      "megaForms": [
+        {
+          "key": "victreebel-mega",
+          "name": "超级大食花",
+          "imageId": 10279,
+          "types": [
+            "草",
+            "毒"
+          ],
+          "stone": {
+            "name": "大食花进化石",
+            "slug": "victreebelite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -1245,6 +1413,22 @@
       "types": [
         "水",
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "slowbro-mega",
+          "name": "超级呆壳兽",
+          "imageId": 10071,
+          "types": [
+            "水",
+            "超能力"
+          ],
+          "stone": {
+            "name": "呆壳兽进化石",
+            "slug": "slowbronite",
+            "spriteSlug": "slowbronite"
+          }
+        }
       ]
     },
     {
@@ -1465,6 +1649,22 @@
       "types": [
         "幽灵",
         "毒"
+      ],
+      "megaForms": [
+        {
+          "key": "gengar-mega",
+          "name": "超级耿鬼",
+          "imageId": 10038,
+          "types": [
+            "幽灵",
+            "毒"
+          ],
+          "stone": {
+            "name": "耿鬼进化石",
+            "slug": "gengarite",
+            "spriteSlug": "gengarite"
+          }
+        }
       ]
     },
     {
@@ -1785,6 +1985,21 @@
       "category": "亲子宝可梦",
       "types": [
         "一般"
+      ],
+      "megaForms": [
+        {
+          "key": "kangaskhan-mega",
+          "name": "超级袋兽",
+          "imageId": 10039,
+          "types": [
+            "一般"
+          ],
+          "stone": {
+            "name": "袋兽进化石",
+            "slug": "kangaskhanite",
+            "spriteSlug": "kangaskhanite"
+          }
+        }
       ]
     },
     {
@@ -1876,6 +2091,22 @@
       "types": [
         "水",
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "starmie-mega",
+          "name": "超级宝石海星",
+          "imageId": 10280,
+          "types": [
+            "水",
+            "超能力"
+          ],
+          "stone": {
+            "name": "宝石海星进化石",
+            "slug": "starminite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -1969,6 +2200,22 @@
       "category": "锹形虫宝可梦",
       "types": [
         "虫"
+      ],
+      "megaForms": [
+        {
+          "key": "pinsir-mega",
+          "name": "超级凯罗斯",
+          "imageId": 10040,
+          "types": [
+            "虫",
+            "飞行"
+          ],
+          "stone": {
+            "name": "凯罗斯进化石",
+            "slug": "pinsirite",
+            "spriteSlug": "pinsirite"
+          }
+        }
       ]
     },
     {
@@ -2015,6 +2262,22 @@
       "types": [
         "水",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "gyarados-mega",
+          "name": "超级暴鲤龙",
+          "imageId": 10041,
+          "types": [
+            "水",
+            "恶"
+          ],
+          "stone": {
+            "name": "暴鲤龙进化石",
+            "slug": "gyaradosite",
+            "spriteSlug": "gyaradosite"
+          }
+        }
       ]
     },
     {
@@ -2201,6 +2464,22 @@
       "types": [
         "岩石",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "aerodactyl-mega",
+          "name": "超级化石翼龙",
+          "imageId": 10042,
+          "types": [
+            "岩石",
+            "飞行"
+          ],
+          "stone": {
+            "name": "化石翼龙进化石",
+            "slug": "aerodactylite",
+            "spriteSlug": "aerodactylite"
+          }
+        }
       ]
     },
     {
@@ -2310,6 +2589,22 @@
       "types": [
         "龙",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "dragonite-mega",
+          "name": "超级快龙",
+          "imageId": 10281,
+          "types": [
+            "龙",
+            "飞行"
+          ],
+          "stone": {
+            "name": "快龙进化石",
+            "slug": "dragoninite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -2325,6 +2620,35 @@
       "category": "基因宝可梦",
       "types": [
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "mewtwo-mega-x",
+          "name": "超级超梦Ｘ",
+          "imageId": 10043,
+          "types": [
+            "超能力",
+            "格斗"
+          ],
+          "stone": {
+            "name": "超梦进化石Ｘ",
+            "slug": "mewtwonite-x",
+            "spriteSlug": "mewtwonite-x"
+          }
+        },
+        {
+          "key": "mewtwo-mega-y",
+          "name": "超级超梦Ｙ",
+          "imageId": 10044,
+          "types": [
+            "超能力"
+          ],
+          "stone": {
+            "name": "超梦进化石Ｙ",
+            "slug": "mewtwonite-y",
+            "spriteSlug": "mewtwonite-y"
+          }
+        }
       ]
     },
     {
@@ -2385,6 +2709,22 @@
       "category": "芳草宝可梦",
       "types": [
         "草"
+      ],
+      "megaForms": [
+        {
+          "key": "meganium-mega",
+          "name": "超级大竺葵",
+          "imageId": 10282,
+          "types": [
+            "草",
+            "妖精"
+          ],
+          "stone": {
+            "name": "大竺葵进化石",
+            "slug": "meganiumite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -2475,6 +2815,22 @@
       "category": "大颚宝可梦",
       "types": [
         "水"
+      ],
+      "megaForms": [
+        {
+          "key": "feraligatr-mega",
+          "name": "超级大力鳄",
+          "imageId": 10283,
+          "types": [
+            "水",
+            "龙"
+          ],
+          "stone": {
+            "name": "大力鳄进化石",
+            "slug": "feraligite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -2803,6 +3159,22 @@
       "category": "灯宝可梦",
       "types": [
         "电"
+      ],
+      "megaForms": [
+        {
+          "key": "ampharos-mega",
+          "name": "超级电龙",
+          "imageId": 10045,
+          "types": [
+            "电",
+            "龙"
+          ],
+          "stone": {
+            "name": "电龙进化石",
+            "slug": "ampharosite",
+            "spriteSlug": "ampharosite"
+          }
+        }
       ]
     },
     {
@@ -3222,6 +3594,22 @@
       "types": [
         "钢",
         "地面"
+      ],
+      "megaForms": [
+        {
+          "key": "steelix-mega",
+          "name": "超级大钢蛇",
+          "imageId": 10072,
+          "types": [
+            "钢",
+            "地面"
+          ],
+          "stone": {
+            "name": "大钢蛇进化石",
+            "slug": "steelixite",
+            "spriteSlug": "steelixite"
+          }
+        }
       ]
     },
     {
@@ -3284,6 +3672,22 @@
       "types": [
         "虫",
         "钢"
+      ],
+      "megaForms": [
+        {
+          "key": "scizor-mega",
+          "name": "超级巨钳螳螂",
+          "imageId": 10046,
+          "types": [
+            "虫",
+            "钢"
+          ],
+          "stone": {
+            "name": "巨钳螳螂进化石",
+            "slug": "scizorite",
+            "spriteSlug": "scizorite"
+          }
+        }
       ]
     },
     {
@@ -3316,6 +3720,22 @@
       "types": [
         "虫",
         "格斗"
+      ],
+      "megaForms": [
+        {
+          "key": "heracross-mega",
+          "name": "超级赫拉克罗斯",
+          "imageId": 10047,
+          "types": [
+            "虫",
+            "格斗"
+          ],
+          "stone": {
+            "name": "赫拉克罗斯进化石",
+            "slug": "heracronite",
+            "spriteSlug": "heracronite"
+          }
+        }
       ]
     },
     {
@@ -3519,6 +3939,22 @@
       "types": [
         "钢",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "skarmory-mega",
+          "name": "超级盔甲鸟",
+          "imageId": 10284,
+          "types": [
+            "钢",
+            "飞行"
+          ],
+          "stone": {
+            "name": "盔甲鸟进化石",
+            "slug": "skarmorite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -3551,6 +3987,22 @@
       "types": [
         "恶",
         "火"
+      ],
+      "megaForms": [
+        {
+          "key": "houndoom-mega",
+          "name": "超级黑鲁加",
+          "imageId": 10048,
+          "types": [
+            "恶",
+            "火"
+          ],
+          "stone": {
+            "name": "黑鲁加进化石",
+            "slug": "houndoominite",
+            "spriteSlug": "houndoominite"
+          }
+        }
       ]
     },
     {
@@ -3841,6 +4293,22 @@
       "types": [
         "岩石",
         "恶"
+      ],
+      "megaForms": [
+        {
+          "key": "tyranitar-mega",
+          "name": "超级班基拉斯",
+          "imageId": 10049,
+          "types": [
+            "岩石",
+            "恶"
+          ],
+          "stone": {
+            "name": "班基拉斯进化石",
+            "slug": "tyranitarite",
+            "spriteSlug": "tyranitarite"
+          }
+        }
       ]
     },
     {
@@ -3934,6 +4402,22 @@
       "category": "密林宝可梦",
       "types": [
         "草"
+      ],
+      "megaForms": [
+        {
+          "key": "sceptile-mega",
+          "name": "超级蜥蜴王",
+          "imageId": 10065,
+          "types": [
+            "草",
+            "龙"
+          ],
+          "stone": {
+            "name": "蜥蜴王进化石",
+            "slug": "sceptilite",
+            "spriteSlug": "sceptilite"
+          }
+        }
       ]
     },
     {
@@ -3981,6 +4465,22 @@
       "types": [
         "火",
         "格斗"
+      ],
+      "megaForms": [
+        {
+          "key": "blaziken-mega",
+          "name": "超级火焰鸡",
+          "imageId": 10050,
+          "types": [
+            "火",
+            "格斗"
+          ],
+          "stone": {
+            "name": "火焰鸡进化石",
+            "slug": "blazikenite",
+            "spriteSlug": "blazikenite"
+          }
+        }
       ]
     },
     {
@@ -4028,6 +4528,22 @@
       "types": [
         "水",
         "地面"
+      ],
+      "megaForms": [
+        {
+          "key": "swampert-mega",
+          "name": "超级巨沼怪",
+          "imageId": 10064,
+          "types": [
+            "水",
+            "地面"
+          ],
+          "stone": {
+            "name": "巨沼怪进化石",
+            "slug": "swampertite",
+            "spriteSlug": "swampertite"
+          }
+        }
       ]
     },
     {
@@ -4372,6 +4888,22 @@
       "types": [
         "超能力",
         "妖精"
+      ],
+      "megaForms": [
+        {
+          "key": "gardevoir-mega",
+          "name": "超级沙奈朵",
+          "imageId": 10051,
+          "types": [
+            "超能力",
+            "妖精"
+          ],
+          "stone": {
+            "name": "沙奈朵进化石",
+            "slug": "gardevoirite",
+            "spriteSlug": "gardevoirite"
+          }
+        }
       ]
     },
     {
@@ -4680,6 +5212,22 @@
       "types": [
         "恶",
         "幽灵"
+      ],
+      "megaForms": [
+        {
+          "key": "sableye-mega",
+          "name": "超级勾魂眼",
+          "imageId": 10066,
+          "types": [
+            "恶",
+            "幽灵"
+          ],
+          "stone": {
+            "name": "勾魂眼进化石",
+            "slug": "sablenite",
+            "spriteSlug": "sablenite"
+          }
+        }
       ]
     },
     {
@@ -4696,6 +5244,22 @@
       "types": [
         "钢",
         "妖精"
+      ],
+      "megaForms": [
+        {
+          "key": "mawile-mega",
+          "name": "超级大嘴娃",
+          "imageId": 10052,
+          "types": [
+            "钢",
+            "妖精"
+          ],
+          "stone": {
+            "name": "大嘴娃进化石",
+            "slug": "mawilite",
+            "spriteSlug": "mawilite"
+          }
+        }
       ]
     },
     {
@@ -4744,6 +5308,21 @@
       "types": [
         "钢",
         "岩石"
+      ],
+      "megaForms": [
+        {
+          "key": "aggron-mega",
+          "name": "超级波士可多拉",
+          "imageId": 10053,
+          "types": [
+            "钢"
+          ],
+          "stone": {
+            "name": "波士可多拉进化石",
+            "slug": "aggronite",
+            "spriteSlug": "aggronite"
+          }
+        }
       ]
     },
     {
@@ -4776,6 +5355,22 @@
       "types": [
         "格斗",
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "medicham-mega",
+          "name": "超级恰雷姆",
+          "imageId": 10054,
+          "types": [
+            "格斗",
+            "超能力"
+          ],
+          "stone": {
+            "name": "恰雷姆进化石",
+            "slug": "medichamite",
+            "spriteSlug": "medichamite"
+          }
+        }
       ]
     },
     {
@@ -4806,6 +5401,21 @@
       "category": "放电宝可梦",
       "types": [
         "电"
+      ],
+      "megaForms": [
+        {
+          "key": "manectric-mega",
+          "name": "超级雷电兽",
+          "imageId": 10055,
+          "types": [
+            "电"
+          ],
+          "stone": {
+            "name": "雷电兽进化石",
+            "slug": "manectite",
+            "spriteSlug": "manectite"
+          }
+        }
       ]
     },
     {
@@ -4944,6 +5554,22 @@
       "types": [
         "水",
         "恶"
+      ],
+      "megaForms": [
+        {
+          "key": "sharpedo-mega",
+          "name": "超级巨牙鲨",
+          "imageId": 10070,
+          "types": [
+            "水",
+            "恶"
+          ],
+          "stone": {
+            "name": "巨牙鲨进化石",
+            "slug": "sharpedonite",
+            "spriteSlug": "sharpedonite"
+          }
+        }
       ]
     },
     {
@@ -5006,6 +5632,22 @@
       "types": [
         "火",
         "地面"
+      ],
+      "megaForms": [
+        {
+          "key": "camerupt-mega",
+          "name": "超级喷火驼",
+          "imageId": 10087,
+          "types": [
+            "火",
+            "地面"
+          ],
+          "stone": {
+            "name": "喷火驼进化石",
+            "slug": "cameruptite",
+            "spriteSlug": "cameruptite"
+          }
+        }
       ]
     },
     {
@@ -5176,6 +5818,22 @@
       "types": [
         "龙",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "altaria-mega",
+          "name": "超级七夕青鸟",
+          "imageId": 10067,
+          "types": [
+            "龙",
+            "妖精"
+          ],
+          "stone": {
+            "name": "七夕青鸟进化石",
+            "slug": "altarianite",
+            "spriteSlug": "altarianite"
+          }
+        }
       ]
     },
     {
@@ -5487,6 +6145,21 @@
       "category": "布偶宝可梦",
       "types": [
         "幽灵"
+      ],
+      "megaForms": [
+        {
+          "key": "banette-mega",
+          "name": "超级诅咒娃娃",
+          "imageId": 10056,
+          "types": [
+            "幽灵"
+          ],
+          "stone": {
+            "name": "诅咒娃娃进化石",
+            "slug": "banettite",
+            "spriteSlug": "banettite"
+          }
+        }
       ]
     },
     {
@@ -5548,6 +6221,22 @@
       "category": "风铃宝可梦",
       "types": [
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "chimecho-mega",
+          "name": "超级风铃铃",
+          "imageId": 10306,
+          "types": [
+            "超能力",
+            "钢"
+          ],
+          "stone": {
+            "name": "风铃铃进化石",
+            "slug": "chimechite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -5563,6 +6252,35 @@
       "category": "灾祸宝可梦",
       "types": [
         "恶"
+      ],
+      "megaForms": [
+        {
+          "key": "absol-mega",
+          "name": "超级阿勃梭鲁",
+          "imageId": 10057,
+          "types": [
+            "恶"
+          ],
+          "stone": {
+            "name": "阿勃梭鲁进化石",
+            "slug": "absolite",
+            "spriteSlug": "absolite"
+          }
+        },
+        {
+          "key": "absol-mega-z",
+          "name": "超级阿勃梭鲁Ｚ",
+          "imageId": 10307,
+          "types": [
+            "恶",
+            "幽灵"
+          ],
+          "stone": {
+            "name": "阿勃梭鲁进化石Ｚ",
+            "slug": "absolite-z",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -5608,6 +6326,21 @@
       "category": "脸面宝可梦",
       "types": [
         "冰"
+      ],
+      "megaForms": [
+        {
+          "key": "glalie-mega",
+          "name": "超级冰鬼护",
+          "imageId": 10074,
+          "types": [
+            "冰"
+          ],
+          "stone": {
+            "name": "冰鬼护进化石",
+            "slug": "glalitite",
+            "spriteSlug": "glalitite"
+          }
+        }
       ]
     },
     {
@@ -5778,6 +6511,22 @@
       "types": [
         "龙",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "salamence-mega",
+          "name": "超级暴飞龙",
+          "imageId": 10089,
+          "types": [
+            "龙",
+            "飞行"
+          ],
+          "stone": {
+            "name": "暴飞龙进化石",
+            "slug": "salamencite",
+            "spriteSlug": "salamencite"
+          }
+        }
       ]
     },
     {
@@ -5826,6 +6575,22 @@
       "types": [
         "钢",
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "metagross-mega",
+          "name": "超级巨金怪",
+          "imageId": 10076,
+          "types": [
+            "钢",
+            "超能力"
+          ],
+          "stone": {
+            "name": "巨金怪进化石",
+            "slug": "metagrossite",
+            "spriteSlug": "metagrossite"
+          }
+        }
       ]
     },
     {
@@ -5887,6 +6652,22 @@
       "types": [
         "龙",
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "latias-mega",
+          "name": "超级拉帝亚斯",
+          "imageId": 10062,
+          "types": [
+            "龙",
+            "超能力"
+          ],
+          "stone": {
+            "name": "拉帝亚斯进化石",
+            "slug": "latiasite",
+            "spriteSlug": "latiasite"
+          }
+        }
       ]
     },
     {
@@ -5903,6 +6684,22 @@
       "types": [
         "龙",
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "latios-mega",
+          "name": "超级拉帝欧斯",
+          "imageId": 10063,
+          "types": [
+            "龙",
+            "超能力"
+          ],
+          "stone": {
+            "name": "拉帝欧斯进化石",
+            "slug": "latiosite",
+            "spriteSlug": "latiosite"
+          }
+        }
       ]
     },
     {
@@ -5949,6 +6746,22 @@
       "types": [
         "龙",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "rayquaza-mega",
+          "name": "超级烈空坐",
+          "imageId": 10079,
+          "types": [
+            "龙",
+            "飞行"
+          ],
+          "stone": {
+            "name": "无需超级进化石",
+            "slug": "key-stone",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -6167,6 +6980,22 @@
       "types": [
         "一般",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "staraptor-mega",
+          "name": "超级姆克鹰",
+          "imageId": 10308,
+          "types": [
+            "格斗",
+            "飞行"
+          ],
+          "stone": {
+            "name": "姆克鹰进化石",
+            "slug": "staraptite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -6629,6 +7458,22 @@
       "category": "兔子宝可梦",
       "types": [
         "一般"
+      ],
+      "megaForms": [
+        {
+          "key": "lopunny-mega",
+          "name": "超级长耳兔",
+          "imageId": 10088,
+          "types": [
+            "一般",
+            "格斗"
+          ],
+          "stone": {
+            "name": "长耳兔进化石",
+            "slug": "lopunnite",
+            "spriteSlug": "lopunnite"
+          }
+        }
       ]
     },
     {
@@ -6895,6 +7740,35 @@
       "types": [
         "龙",
         "地面"
+      ],
+      "megaForms": [
+        {
+          "key": "garchomp-mega",
+          "name": "超级烈咬陆鲨",
+          "imageId": 10058,
+          "types": [
+            "龙",
+            "地面"
+          ],
+          "stone": {
+            "name": "烈咬陆鲨进化石",
+            "slug": "garchompite",
+            "spriteSlug": "garchompite"
+          }
+        },
+        {
+          "key": "garchomp-mega-z",
+          "name": "超级烈咬陆鲨Ｚ",
+          "imageId": 10309,
+          "types": [
+            "龙"
+          ],
+          "stone": {
+            "name": "烈咬陆鲨进化石Ｚ",
+            "slug": "garchompite-z",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -6941,6 +7815,36 @@
       "types": [
         "格斗",
         "钢"
+      ],
+      "megaForms": [
+        {
+          "key": "lucario-mega",
+          "name": "超级路卡利欧",
+          "imageId": 10059,
+          "types": [
+            "格斗",
+            "钢"
+          ],
+          "stone": {
+            "name": "路卡利欧进化石",
+            "slug": "lucarionite",
+            "spriteSlug": "lucarionite"
+          }
+        },
+        {
+          "key": "lucario-mega-z",
+          "name": "超级路卡利欧Ｚ",
+          "imageId": 10310,
+          "types": [
+            "格斗",
+            "钢"
+          ],
+          "stone": {
+            "name": "路卡利欧进化石Ｚ",
+            "slug": "lucarionite-z",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -7128,6 +8032,22 @@
       "types": [
         "草",
         "冰"
+      ],
+      "megaForms": [
+        {
+          "key": "abomasnow-mega",
+          "name": "超级暴雪王",
+          "imageId": 10060,
+          "types": [
+            "草",
+            "冰"
+          ],
+          "stone": {
+            "name": "暴雪王进化石",
+            "slug": "abomasite",
+            "spriteSlug": "abomasite"
+          }
+        }
       ]
     },
     {
@@ -7361,6 +8281,22 @@
       "types": [
         "超能力",
         "格斗"
+      ],
+      "megaForms": [
+        {
+          "key": "gallade-mega",
+          "name": "超级艾路雷朵",
+          "imageId": 10068,
+          "types": [
+            "超能力",
+            "格斗"
+          ],
+          "stone": {
+            "name": "艾路雷朵进化石",
+            "slug": "galladite",
+            "spriteSlug": "galladite"
+          }
+        }
       ]
     },
     {
@@ -7408,6 +8344,22 @@
       "types": [
         "冰",
         "幽灵"
+      ],
+      "megaForms": [
+        {
+          "key": "froslass-mega",
+          "name": "超级雪妖女",
+          "imageId": 10285,
+          "types": [
+            "冰",
+            "幽灵"
+          ],
+          "stone": {
+            "name": "雪妖女进化石",
+            "slug": "froslassite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -7517,6 +8469,22 @@
       "types": [
         "火",
         "钢"
+      ],
+      "megaForms": [
+        {
+          "key": "heatran-mega",
+          "name": "超级席多蓝恩",
+          "imageId": 10311,
+          "types": [
+            "火",
+            "钢"
+          ],
+          "stone": {
+            "name": "席多蓝恩进化石",
+            "slug": "heatranite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -7608,6 +8576,21 @@
       "category": "暗黑宝可梦",
       "types": [
         "恶"
+      ],
+      "megaForms": [
+        {
+          "key": "darkrai-mega",
+          "name": "超级达克莱伊",
+          "imageId": 10312,
+          "types": [
+            "恶"
+          ],
+          "stone": {
+            "name": "达克莱伊进化石",
+            "slug": "darkranite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -7746,6 +8729,22 @@
       "types": [
         "火",
         "格斗"
+      ],
+      "megaForms": [
+        {
+          "key": "emboar-mega",
+          "name": "超级炎武王",
+          "imageId": 10286,
+          "types": [
+            "火",
+            "格斗"
+          ],
+          "stone": {
+            "name": "炎武王进化石",
+            "slug": "emboarite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -8202,6 +9201,22 @@
       "types": [
         "地面",
         "钢"
+      ],
+      "megaForms": [
+        {
+          "key": "excadrill-mega",
+          "name": "超级龙头地鼠",
+          "imageId": 10287,
+          "types": [
+            "地面",
+            "钢"
+          ],
+          "stone": {
+            "name": "龙头地鼠进化石",
+            "slug": "excadrite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -8217,6 +9232,22 @@
       "category": "听力宝可梦",
       "types": [
         "一般"
+      ],
+      "megaForms": [
+        {
+          "key": "audino-mega",
+          "name": "超级差不多娃娃",
+          "imageId": 10069,
+          "types": [
+            "一般",
+            "妖精"
+          ],
+          "stone": {
+            "name": "差不多娃娃进化石",
+            "slug": "audinite",
+            "spriteSlug": "audinite"
+          }
+        }
       ]
     },
     {
@@ -8435,6 +9466,22 @@
       "types": [
         "虫",
         "毒"
+      ],
+      "megaForms": [
+        {
+          "key": "scolipede-mega",
+          "name": "超级蜈蚣王",
+          "imageId": 10288,
+          "types": [
+            "虫",
+            "毒"
+          ],
+          "stone": {
+            "name": "蜈蚣王进化石",
+            "slug": "scolipite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -8669,6 +9716,22 @@
       "types": [
         "恶",
         "格斗"
+      ],
+      "megaForms": [
+        {
+          "key": "scrafty-mega",
+          "name": "超级头巾混混",
+          "imageId": 10289,
+          "types": [
+            "恶",
+            "格斗"
+          ],
+          "stone": {
+            "name": "头巾混混进化石",
+            "slug": "scraftinite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -9348,6 +10411,21 @@
       "category": "电鱼宝可梦",
       "types": [
         "电"
+      ],
+      "megaForms": [
+        {
+          "key": "eelektross-mega",
+          "name": "超级麻麻鳗鱼王",
+          "imageId": 10290,
+          "types": [
+            "电"
+          ],
+          "stone": {
+            "name": "麻麻鳗鱼王进化石",
+            "slug": "eelektrossite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -9426,6 +10504,22 @@
       "types": [
         "幽灵",
         "火"
+      ],
+      "megaForms": [
+        {
+          "key": "chandelure-mega",
+          "name": "超级水晶灯火灵",
+          "imageId": 10291,
+          "types": [
+            "幽灵",
+            "火"
+          ],
+          "stone": {
+            "name": "水晶灯火灵进化石",
+            "slug": "chandelurite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -9639,6 +10733,22 @@
       "types": [
         "地面",
         "幽灵"
+      ],
+      "megaForms": [
+        {
+          "key": "golurk-mega",
+          "name": "超级泥偶巨人",
+          "imageId": 10313,
+          "types": [
+            "地面",
+            "幽灵"
+          ],
+          "stone": {
+            "name": "泥偶巨人进化石",
+            "slug": "golurkite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10098,6 +11208,22 @@
       "types": [
         "草",
         "格斗"
+      ],
+      "megaForms": [
+        {
+          "key": "chesnaught-mega",
+          "name": "超级布里卡隆",
+          "imageId": 10292,
+          "types": [
+            "草",
+            "格斗"
+          ],
+          "stone": {
+            "name": "布里卡隆进化石",
+            "slug": "chesnaughtite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10144,6 +11270,22 @@
       "types": [
         "火",
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "delphox-mega",
+          "name": "超级妖火红狐",
+          "imageId": 10293,
+          "types": [
+            "火",
+            "超能力"
+          ],
+          "stone": {
+            "name": "妖火红狐进化石",
+            "slug": "delphoxite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10190,6 +11332,22 @@
       "types": [
         "水",
         "恶"
+      ],
+      "megaForms": [
+        {
+          "key": "greninja-mega",
+          "name": "超级甲贺忍蛙",
+          "imageId": 10294,
+          "types": [
+            "水",
+            "恶"
+          ],
+          "stone": {
+            "name": "甲贺忍蛙进化石",
+            "slug": "greninjite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10347,6 +11505,22 @@
       "types": [
         "火",
         "一般"
+      ],
+      "megaForms": [
+        {
+          "key": "pyroar-mega",
+          "name": "超级火炎狮",
+          "imageId": 10295,
+          "types": [
+            "火",
+            "一般"
+          ],
+          "stone": {
+            "name": "火炎狮进化石",
+            "slug": "pyroarite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10377,6 +11551,21 @@
       "category": "单朵宝可梦",
       "types": [
         "妖精"
+      ],
+      "megaForms": [
+        {
+          "key": "floette-mega",
+          "name": "超级花叶蒂",
+          "imageId": 10296,
+          "types": [
+            "妖精"
+          ],
+          "stone": {
+            "name": "花叶蒂进化石",
+            "slug": "floettite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10498,6 +11687,34 @@
       "category": "抑制宝可梦",
       "types": [
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "meowstic-male-mega",
+          "name": "超级超能妙喵（雄性的样子）",
+          "imageId": 10314,
+          "types": [
+            "超能力"
+          ],
+          "stone": {
+            "name": "超能妙喵进化石",
+            "slug": "meowsticite",
+            "spriteSlug": "key-stone"
+          }
+        },
+        {
+          "key": "meowstic-female-mega",
+          "name": "超级超能妙喵（雌性的样子）",
+          "imageId": 10326,
+          "types": [
+            "超能力"
+          ],
+          "stone": {
+            "name": "超能妙喵进化石",
+            "slug": "meowsticite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10638,6 +11855,22 @@
       "types": [
         "恶",
         "超能力"
+      ],
+      "megaForms": [
+        {
+          "key": "malamar-mega",
+          "name": "超级乌贼王",
+          "imageId": 10297,
+          "types": [
+            "恶",
+            "超能力"
+          ],
+          "stone": {
+            "name": "乌贼王进化石",
+            "slug": "malamarite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10670,6 +11903,22 @@
       "types": [
         "岩石",
         "水"
+      ],
+      "megaForms": [
+        {
+          "key": "barbaracle-mega",
+          "name": "超级龟足巨铠",
+          "imageId": 10298,
+          "types": [
+            "岩石",
+            "格斗"
+          ],
+          "stone": {
+            "name": "龟足巨铠进化石",
+            "slug": "barbaracite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10702,6 +11951,22 @@
       "types": [
         "毒",
         "龙"
+      ],
+      "megaForms": [
+        {
+          "key": "dragalge-mega",
+          "name": "超级毒藻龙",
+          "imageId": 10299,
+          "types": [
+            "毒",
+            "龙"
+          ],
+          "stone": {
+            "name": "毒藻龙进化石",
+            "slug": "dragalgite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -10859,6 +12124,22 @@
       "types": [
         "格斗",
         "飞行"
+      ],
+      "megaForms": [
+        {
+          "key": "hawlucha-mega",
+          "name": "超级摔角鹰人",
+          "imageId": 10300,
+          "types": [
+            "格斗",
+            "飞行"
+          ],
+          "stone": {
+            "name": "摔角鹰人进化石",
+            "slug": "hawluchanite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -11125,6 +12406,22 @@
       "types": [
         "龙",
         "地面"
+      ],
+      "megaForms": [
+        {
+          "key": "zygarde-mega",
+          "name": "超级基格尔德",
+          "imageId": 10301,
+          "types": [
+            "龙",
+            "地面"
+          ],
+          "stone": {
+            "name": "基格尔德进化石",
+            "slug": "zygardite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -11141,6 +12438,22 @@
       "types": [
         "岩石",
         "妖精"
+      ],
+      "megaForms": [
+        {
+          "key": "diancie-mega",
+          "name": "超级蒂安希",
+          "imageId": 10075,
+          "types": [
+            "岩石",
+            "妖精"
+          ],
+          "stone": {
+            "name": "蒂安希进化石",
+            "slug": "diancite",
+            "spriteSlug": "diancite"
+          }
+        }
       ]
     },
     {
@@ -11754,6 +13067,22 @@
       "types": [
         "格斗",
         "冰"
+      ],
+      "megaForms": [
+        {
+          "key": "crabominable-mega",
+          "name": "超级好胜毛蟹",
+          "imageId": 10315,
+          "types": [
+            "格斗",
+            "冰"
+          ],
+          "stone": {
+            "name": "好胜毛蟹进化石",
+            "slug": "crabominite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -12190,6 +13519,22 @@
       "types": [
         "虫",
         "水"
+      ],
+      "megaForms": [
+        {
+          "key": "golisopod-mega",
+          "name": "超级具甲武者",
+          "imageId": 10316,
+          "types": [
+            "虫",
+            "钢"
+          ],
+          "stone": {
+            "name": "具甲武者进化石",
+            "slug": "golisopite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -12378,6 +13723,22 @@
       "types": [
         "一般",
         "龙"
+      ],
+      "megaForms": [
+        {
+          "key": "drampa-mega",
+          "name": "超级老翁龙",
+          "imageId": 10302,
+          "types": [
+            "一般",
+            "龙"
+          ],
+          "stone": {
+            "name": "老翁龙进化石",
+            "slug": "drampanite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -12709,6 +14070,36 @@
       "types": [
         "钢",
         "妖精"
+      ],
+      "megaForms": [
+        {
+          "key": "magearna-mega",
+          "name": "超级玛机雅娜（现在的颜色）",
+          "imageId": 10317,
+          "types": [
+            "钢",
+            "妖精"
+          ],
+          "stone": {
+            "name": "玛机雅娜进化石",
+            "slug": "magearnite",
+            "spriteSlug": "key-stone"
+          }
+        },
+        {
+          "key": "magearna-original-mega",
+          "name": "超级玛机雅娜（500年前的颜色）",
+          "imageId": 10318,
+          "types": [
+            "钢",
+            "妖精"
+          ],
+          "stone": {
+            "name": "玛机雅娜进化石",
+            "slug": "magearnite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -12803,6 +14194,21 @@
       "category": "奔雷宝可梦",
       "types": [
         "电"
+      ],
+      "megaForms": [
+        {
+          "key": "zeraora-mega",
+          "name": "超级捷拉奥拉",
+          "imageId": 10319,
+          "types": [
+            "电"
+          ],
+          "stone": {
+            "name": "捷拉奥拉进化石",
+            "slug": "zeraorite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -14322,6 +15728,21 @@
       "category": "阵形宝可梦",
       "types": [
         "格斗"
+      ],
+      "megaForms": [
+        {
+          "key": "falinks-mega",
+          "name": "超级列阵兵",
+          "imageId": 10303,
+          "types": [
+            "格斗"
+          ],
+          "stone": {
+            "name": "列阵兵进化石",
+            "slug": "falinksite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -15659,6 +17080,22 @@
       "types": [
         "草",
         "火"
+      ],
+      "megaForms": [
+        {
+          "key": "scovillain-mega",
+          "name": "超级狠辣椒",
+          "imageId": 10320,
+          "types": [
+            "草",
+            "火"
+          ],
+          "stone": {
+            "name": "狠辣椒进化石",
+            "slug": "scovillainite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -15939,6 +17376,22 @@
       "types": [
         "岩石",
         "毒"
+      ],
+      "megaForms": [
+        {
+          "key": "glimmora-mega",
+          "name": "超级晶光花",
+          "imageId": 10321,
+          "types": [
+            "岩石",
+            "毒"
+          ],
+          "stone": {
+            "name": "晶光花进化石",
+            "slug": "glimmoranite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -16062,6 +17515,50 @@
       "types": [
         "龙",
         "水"
+      ],
+      "megaForms": [
+        {
+          "key": "tatsugiri-curly-mega",
+          "name": "超级米立龙（上弓姿势）",
+          "imageId": 10322,
+          "types": [
+            "龙",
+            "水"
+          ],
+          "stone": {
+            "name": "米立龙进化石",
+            "slug": "tatsugirinite",
+            "spriteSlug": "key-stone"
+          }
+        },
+        {
+          "key": "tatsugiri-droopy-mega",
+          "name": "超级米立龙（下垂姿势）",
+          "imageId": 10323,
+          "types": [
+            "龙",
+            "水"
+          ],
+          "stone": {
+            "name": "米立龙进化石",
+            "slug": "tatsugirinite",
+            "spriteSlug": "key-stone"
+          }
+        },
+        {
+          "key": "tatsugiri-stretchy-mega",
+          "name": "超级米立龙（平挺姿势）",
+          "imageId": 10324,
+          "types": [
+            "龙",
+            "水"
+          ],
+          "stone": {
+            "name": "米立龙进化石",
+            "slug": "tatsugirinite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
@@ -16381,6 +17878,22 @@
       "types": [
         "龙",
         "冰"
+      ],
+      "megaForms": [
+        {
+          "key": "baxcalibur-mega",
+          "name": "超级戟脊龙",
+          "imageId": 10325,
+          "types": [
+            "龙",
+            "冰"
+          ],
+          "stone": {
+            "name": "戟脊龙进化石",
+            "slug": "baxcalibrite",
+            "spriteSlug": "key-stone"
+          }
+        }
       ]
     },
     {
