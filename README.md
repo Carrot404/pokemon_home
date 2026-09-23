@@ -2,6 +2,33 @@
 
 一个用于规划 Pokémon HOME 全国图鉴箱位的 React 网页。普通与闪光形态左右相邻，每代从新箱开始；单账户同步服务使用 SQLite 保存收藏状态，可跨设备使用。
 
+## 项目结构
+
+```text
+├── src/
+│   ├── App.jsx                 页面、搜索筛选、详情与收藏同步
+│   ├── main.jsx                React 入口
+│   ├── styles.css              页面样式与移动端布局
+│   ├── data/pokemon.json       生成的宝可梦静态数据（不要手动修改）
+│   └── lib/                    箱位规则、待同步变更、API 请求及相关测试
+├── server/                     登录、SQLite 同步服务、密码哈希工具及测试
+├── scripts/                    数据生成与校验脚本
+├── public/                     图片加载失败时使用的占位图
+├── index.html                  Vite 页面入口
+├── vite.config.js              Vite 配置
+├── package.json                依赖与检查命令
+├── package-lock.json           npm 依赖锁文件
+├── Dockerfile                  构建、API、密码工具和 Web 镜像
+├── compose.yaml                服务编排与数据库持久化卷
+├── nginx.conf                  静态文件及 /api 反向代理配置
+├── .env.example                部署环境变量示例（.env 不提交）
+├── .gitignore / .dockerignore  Git 与 Docker 构建上下文排除规则
+├── AGENTS.md                   项目维护约定
+└── README.md                   使用与维护说明
+```
+
+`dist/` 是构建产物，`node_modules/` 是本机安装的依赖，均不入库且可重新生成。`backup/` 中的本机收藏 JSON 备份也不入库，但包含用户数据，清理构建产物时不要删除；`.env` 包含部署配置，也不要删除或提交。实际收藏数据保存在 Docker volume `pokemon_home_data` 中，不在项目目录内。
+
 ## Docker 部署
 
 运行只需要 Docker Engine 和 Docker Compose 插件，不需要在宿主机安装 Node.js 或 npm。
