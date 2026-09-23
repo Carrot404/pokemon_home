@@ -10,9 +10,10 @@ import {
 } from './lib/boxPlanner.js'
 import {
   acknowledgePendingChange,
-  parsePendingChanges,
+  clearAcknowledgedChanges,
+  loadStoredPendingChanges,
   recordPendingChange,
-  serializePendingChanges,
+  savePendingChange,
 } from './lib/pendingChanges.js'
 import { SyncApiError, syncApi } from './lib/syncApi.js'
 
@@ -51,21 +52,9 @@ function collectionFromKeys(keys, source = '收藏数据') {
 
 function loadPendingChanges() {
   try {
-    return parsePendingChanges(window.localStorage.getItem(PENDING_STORAGE_KEY), validSlotKeys)
+    return loadStoredPendingChanges(window.localStorage, PENDING_STORAGE_KEY, validSlotKeys)
   } catch {
     return new Map()
-  }
-}
-
-function persistPendingChanges(changes) {
-  try {
-    if (changes.size) {
-      window.localStorage.setItem(PENDING_STORAGE_KEY, serializePendingChanges(changes))
-    } else {
-      window.localStorage.removeItem(PENDING_STORAGE_KEY)
-    }
-  } catch {
-    // Browsers can disable storage; the current session still remains usable.
   }
 }
 
@@ -854,7 +843,7 @@ function App() {
     setCollectionReady(true)
     if (dirtySlotsRef.current.size) {
       for (const [key, change] of [...dirtySlotsRef.current]) {
-        enqueueSlotSync(key, change.collected)
+        enqueueSlotSync(key, change.collected, change)
       }
     } else {
       setSyncStatus('synced')
@@ -908,8 +897,14 @@ function App() {
     setSyncError('')
     try {
       const remote = await syncApi.initializeCollection(keys)
+      for (const [key, change] of dirtySlotsRef.current) {
+        try {
+          clearAcknowledgedChanges(window.localStorage, PENDING_STORAGE_KEY, key, change)
+        } catch {
+          // The server is initialized even when browser storage is unavailable.
+        }
+      }
       dirtySlotsRef.current.clear()
-      persistPendingChanges(dirtySlotsRef.current)
       applyRemoteCollection(remote.keys, remote.version, true)
       setMigrationRequired(false)
       setCollectionReady(true)
@@ -933,10 +928,17 @@ function App() {
     }
   }
 
-  function enqueueSlotSync(key, isCollected) {
+  function enqueueSlotSync(key, isCollected, existing = null) {
     const operationId = ++nextOperationIdRef.current
-    recordPendingChange(dirtySlotsRef.current, key, isCollected, operationId)
-    persistPendingChanges(dirtySlotsRef.current)
+    let stored = existing
+    if (!stored?.id) {
+      try {
+        stored = savePendingChange(window.localStorage, PENDING_STORAGE_KEY, key, isCollected)
+      } catch {
+        // Browsers can disable storage; keep the modification for this session.
+      }
+    }
+    recordPendingChange(dirtySlotsRef.current, key, isCollected, operationId, stored ?? {})
     pendingChangesRef.current += 1
     setSyncStatus('syncing')
 
@@ -948,9 +950,14 @@ function App() {
     operation
       .then((remote) => {
         serverVersionRef.current = Math.max(serverVersionRef.current, remote.version)
-        if (acknowledgePendingChange(dirtySlotsRef.current, key, operationId)) {
-          persistPendingChanges(dirtySlotsRef.current)
+        if (stored) {
+          try {
+            clearAcknowledgedChanges(window.localStorage, PENDING_STORAGE_KEY, key, stored)
+          } catch {
+            // A later visit can safely replay the idempotent update.
+          }
         }
+        acknowledgePendingChange(dirtySlotsRef.current, key, operationId)
       })
       .catch(handleSyncFailure)
       .finally(() => {
@@ -970,7 +977,7 @@ function App() {
     if (pendingChangesRef.current) return
     if (dirtySlotsRef.current.size) {
       for (const [key, change] of [...dirtySlotsRef.current]) {
-        enqueueSlotSync(key, change.collected)
+        enqueueSlotSync(key, change.collected, change)
       }
       return
     }
