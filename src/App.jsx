@@ -652,7 +652,7 @@ function App() {
   const [initialLocalState] = useState(loadLocalState)
   const [activeBoxNumber, setActiveBoxNumber] = useState(1)
   const [selectedEntryKey, setSelectedEntryKey] = useState(null)
-  const [highlightedEntryKey, setHighlightedEntryKey] = useState(null)
+  const [highlightedSlot, setHighlightedSlot] = useState(null)
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState('all')
@@ -747,6 +747,15 @@ function App() {
   useEffect(() => {
     boxViewportRef.current?.scrollTo({ left: 0, behavior: 'smooth' })
   }, [activeBoxNumber])
+
+  useEffect(() => {
+    if (!highlightedSlot) return
+    const target = boxViewportRef.current?.querySelector(
+      `[data-position="${highlightedSlot.position}"]`,
+    )
+    target?.querySelector('.slot-main')?.focus({ preventScroll: true })
+    target?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+  }, [highlightedSlot])
 
   const generationCollected = useMemo(
     () =>
@@ -1003,19 +1012,19 @@ function App() {
   function goToBox(boxNumber) {
     const next = Math.min(plan.boxes.length, Math.max(1, Number(boxNumber) || 1))
     setActiveBoxNumber(next)
-    setHighlightedEntryKey(null)
+    setHighlightedSlot(null)
   }
 
   function goToGeneration(generationNumber) {
     const generation = plan.generations[generationNumber - 1]
     setActiveBoxNumber(generation.firstBox)
-    setHighlightedEntryKey(null)
+    setHighlightedSlot(null)
   }
 
   function selectSearchResult(entry) {
     const slot = plan.slotByKey.get(`${entry.key}:normal`)
     setActiveBoxNumber(slot.boxNumber)
-    setHighlightedEntryKey(entry.key)
+    setHighlightedSlot({ entryKey: entry.key, position: slot.position })
     setQuery(`${formatNationalId(entry.nationalId)} ${displayName(entry)}`)
     setStatusFilter('all')
     setVariantFilter('all')
@@ -1199,7 +1208,7 @@ function App() {
                 onChange={(event) => {
                   setQuery(event.target.value)
                   setSearchOpen(true)
-                  setHighlightedEntryKey(null)
+                  setHighlightedSlot(null)
                 }}
                 onKeyDown={(event) => {
                   if (event.key === 'Escape') setSearchOpen(false)
@@ -1368,7 +1377,7 @@ function App() {
                     slot={slot}
                     isCollected={collected.has(slot.key)}
                     isMuted={isSlotMuted(slot)}
-                    isHighlighted={highlightedEntryKey === slot.entry.key}
+                    isHighlighted={highlightedSlot?.entryKey === slot.entry.key}
                     onOpen={setSelectedEntryKey}
                     onToggle={toggleCollected}
                   />
