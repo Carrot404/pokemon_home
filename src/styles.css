@@ -431,6 +431,16 @@
     font-size: 0.84rem;
   }
 
+  .marked-toggle {
+    padding: 7px 12px;
+    border: 1px solid #c9dcf1;
+    border-radius: 10px;
+    background: #f3f8ff;
+    color: #235da9;
+    font-size: 0.76rem;
+    font-weight: 700;
+  }
+
   .filter-row {
     display: flex;
     gap: 13px;
@@ -488,6 +498,73 @@
     color: #91a1b4;
     font-size: 0.67rem;
     text-align: right;
+  }
+
+  .marked-section {
+    grid-column: 1 / -1;
+  }
+
+  .marked-section > span {
+    margin-left: 10px;
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+
+  .marked-list {
+    display: grid;
+    gap: 6px;
+    max-height: 300px;
+    margin-top: 10px;
+    overflow-y: auto;
+  }
+
+  .marked-list[hidden] {
+    display: none;
+  }
+
+  .marked-list > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .marked-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+
+  .marked-item button {
+    padding: 6px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #235da9;
+    font-size: 0.78rem;
+  }
+
+  .marked-item button:first-child {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .marked-item button:last-child {
+    flex: 0 0 auto;
+  }
+
+  .marked-item button:hover {
+    background: #edf6ff;
+  }
+
+  .marked-item span {
+    color: var(--muted);
   }
 
   .generation-tabs {
@@ -1003,18 +1080,39 @@
     white-space: nowrap;
   }
 
+  .slot-actions {
+    display: flex;
+  }
+
   .collection-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     color: #7b8da4;
     border: 0;
     border-top: 1px solid #e4ebf3;
     background: rgba(248, 251, 255, 0.86);
     font-size: 0.62rem;
     font-weight: 700;
+  }
+
+  .mark-toggle {
+    flex: 1;
+    min-width: 0;
+    color: #235da9;
+    border: 0;
+    border-top: 1px solid #e4ebf3;
+    border-left: 1px solid #e4ebf3;
+    background: #f3f8ff;
+    font-size: 0.62rem;
+    font-weight: 700;
+  }
+
+  .mark-toggle[aria-pressed="true"] {
+    background: #dceefc;
   }
 
   .collection-toggle:hover {

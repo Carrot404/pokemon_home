@@ -17,6 +17,7 @@ import {
 } from './lib/pendingChanges.js'
 import { SyncApiError, syncApi } from './lib/syncApi.js'
 import { buildSearchIndex, searchPokemon } from './lib/searchPokemon.js'
+import { loadMarkedSlots, removeCollectedMarks } from './lib/markedSlots.js'
 
 const searchIndex = buildSearchIndex(pokemonData.entries)
 const plan = buildBoxPlan(pokemonData.entries)
@@ -24,6 +25,7 @@ const entriesByKey = new Map(pokemonData.entries.map((entry) => [entry.key, entr
 const validSlotKeys = new Set(plan.slots.map((slot) => slot.key))
 const STORAGE_KEY = 'pokemon-home-box-guide:collection:v1'
 const PENDING_STORAGE_KEY = 'pokemon-home-box-guide:pending-collection:v1'
+const MARKED_STORAGE_KEY = 'pokemon-home-box-guide:marked-slots:v1'
 const PLACEHOLDER_IMAGE = `${import.meta.env.BASE_URL}pokemon-placeholder.svg`
 const KEY_STONE_IMAGE = getItemSpriteUrl('key-stone')
 
@@ -245,7 +247,7 @@ function MegaStoneMark({ megaForms }) {
   )
 }
 
-function PokemonSlot({ slot, isCollected, isMuted, isHighlighted, onOpen, onToggle }) {
+function PokemonSlot({ slot, isCollected, isMarked, isMuted, isHighlighted, onOpen, onToggle, onMark }) {
   const { entry, isShiny } = slot
   const name = displayName(entry)
 
@@ -290,18 +292,31 @@ function PokemonSlot({ slot, isCollected, isMuted, isHighlighted, onOpen, onTogg
           {entry.formLabel ? `${entry.formLabel} · ${slot.label}` : slot.label}
         </span>
       </button>
-      <button
-        className="collection-toggle"
-        type="button"
-        aria-pressed={isCollected}
-        aria-label={`${isCollected ? '取消收集' : '标记已收集'}：${name}${slot.label}`}
-        onClick={() => onToggle(slot.key)}
-      >
-        <span className="check-box" aria-hidden="true">
-          {isCollected && <CheckIcon />}
-        </span>
-        {isCollected ? '已收集' : '待收集'}
-      </button>
+      <div className="slot-actions">
+        <button
+          className="collection-toggle"
+          type="button"
+          aria-pressed={isCollected}
+          aria-label={`${isCollected ? '取消收集' : '标记已收集'}：${name}${slot.label}`}
+          onClick={() => onToggle(slot.key)}
+        >
+          <span className="check-box" aria-hidden="true">
+            {isCollected && <CheckIcon />}
+          </span>
+          {isCollected ? '已收集' : '待收集'}
+        </button>
+        {!isCollected && (
+          <button
+            className="mark-toggle"
+            type="button"
+            aria-pressed={isMarked}
+            aria-label={`${isMarked ? '取消标记' : '标记待找'}：${name}${slot.label}`}
+            onClick={() => onMark(slot.key)}
+          >
+            {isMarked ? '已标记' : '标记待找'}
+          </button>
+        )}
+      </div>
     </article>
   )
 }
@@ -657,6 +672,10 @@ function App() {
   const [highlightedSlot, setHighlightedSlot] = useState(null)
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
+  const [markedOpen, setMarkedOpen] = useState(false)
+  const [markedSlots, setMarkedSlots] = useState(() =>
+    loadMarkedSlots(window.localStorage, MARKED_STORAGE_KEY, validSlotKeys),
+  )
   const [statusFilter, setStatusFilter] = useState('all')
   const [variantFilter, setVariantFilter] = useState('all')
   const [collected, setCollected] = useState(initialLocalState.collection)
@@ -686,6 +705,19 @@ function App() {
       // Browsers can disable storage; the current session still remains usable.
     }
   }, [collected])
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(MARKED_STORAGE_KEY, JSON.stringify([...markedSlots]))
+    } catch {
+      // Marking still works for this session when storage is unavailable.
+    }
+  }, [markedSlots])
+
+  useEffect(() => {
+    if (!collectionReady || ![...markedSlots].some((key) => collected.has(key))) return
+    setMarkedSlots((current) => removeCollectedMarks(current, collected))
+  }, [collected, collectionReady, markedSlots])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -773,6 +805,9 @@ function App() {
   )
 
   const searchResults = useMemo(() => searchPokemon(searchIndex, query), [query])
+  const markedList = plan.slots.filter(
+    (slot) => markedSlots.has(slot.key) && !collected.has(slot.key),
+  )
 
   const currentBoxCollected = currentBox.cells.filter(
     (slot) => slot && collected.has(slot.key),
@@ -996,6 +1031,24 @@ function App() {
     else next.delete(slotKey)
     setCurrentCollection(next)
     enqueueSlotSync(slotKey, isCollected)
+  }
+
+  function toggleMarked(slotKey) {
+    if (!validSlotKeys.has(slotKey) || collectedRef.current.has(slotKey)) return
+    setMarkedSlots((current) => {
+      const next = new Set(current)
+      if (next.has(slotKey)) next.delete(slotKey)
+      else next.add(slotKey)
+      return next
+    })
+  }
+
+  function goToMarkedSlot(slot) {
+    setActiveBoxNumber(slot.boxNumber)
+    setHighlightedSlot({ entryKey: slot.entry.key, position: slot.position })
+    setStatusFilter('all')
+    setVariantFilter('all')
+    setSearchOpen(false)
   }
 
   function goToBox(boxNumber) {
@@ -1257,6 +1310,35 @@ function App() {
             />
           </div>
           <p className="filter-hint">筛选仅淡化不符合项，不会改变固定箱位。</p>
+          <div className="marked-section">
+            <button
+              className="marked-toggle"
+              type="button"
+              aria-expanded={markedOpen}
+              aria-controls="marked-list"
+              onClick={() => setMarkedOpen((open) => !open)}
+            >
+              待找清单（{markedList.length}）{markedOpen ? '收起' : '展开'}
+            </button>
+            <span>标记仅保存在此浏览器</span>
+            <div id="marked-list" className="marked-list" hidden={!markedOpen}>
+              {markedList.length ? markedList.map((slot) => (
+                <div className="marked-item" key={slot.key}>
+                  <button type="button" onClick={() => goToMarkedSlot(slot)}>
+                    <strong>{formatNationalId(slot.entry.nationalId)} {displayName(slot.entry)} · {slot.label}</strong>
+                    <span>箱 {String(slot.boxNumber).padStart(2, '0')} · 第 {String(slot.position).padStart(2, '0')} 格</span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={`取消标记：${displayName(slot.entry)}${slot.label}`}
+                    onClick={() => toggleMarked(slot.key)}
+                  >
+                    取消标记
+                  </button>
+                </div>
+              )) : <p>暂无待找的宝可梦</p>}
+            </div>
+          </div>
         </section>
 
         <nav className="generation-tabs" aria-label="按世代跳转">
@@ -1365,10 +1447,12 @@ function App() {
                     key={slot.key}
                     slot={slot}
                     isCollected={collected.has(slot.key)}
+                    isMarked={markedSlots.has(slot.key)}
                     isMuted={isSlotMuted(slot)}
                     isHighlighted={highlightedSlot?.entryKey === slot.entry.key}
                     onOpen={setSelectedEntryKey}
                     onToggle={toggleCollected}
+                    onMark={toggleMarked}
                   />
                 ) : (
                   <EmptySlot key={`empty-${index + 1}`} position={index + 1} />
