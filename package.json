@@ -12,9 +12,11 @@
     "data:check": "node scripts/check-data.mjs",
     "test:server": "node --test server/server.test.mjs",
     "test:sync-state": "node --test src/lib/pendingChanges.test.js",
-    "test": "npm run data:check && npm run test:server && npm run test:sync-state"
+    "test:search": "node --test src/lib/searchPokemon.test.js",
+    "test": "npm run data:check && npm run test:server && npm run test:sync-state && npm run test:search"
   },
   "dependencies": {
+    "pinyin-pro": "^3.29.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

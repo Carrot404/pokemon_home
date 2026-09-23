@@ -16,7 +16,9 @@ import {
   savePendingChange,
 } from './lib/pendingChanges.js'
 import { SyncApiError, syncApi } from './lib/syncApi.js'
+import { buildSearchIndex, searchPokemon } from './lib/searchPokemon.js'
 
+const searchIndex = buildSearchIndex(pokemonData.entries)
 const plan = buildBoxPlan(pokemonData.entries)
 const entriesByKey = new Map(pokemonData.entries.map((entry) => [entry.key, entry]))
 const validSlotKeys = new Set(plan.slots.map((slot) => slot.key))
@@ -770,20 +772,7 @@ function App() {
     [collected],
   )
 
-  const searchResults = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase('zh-CN')
-    if (!normalized) return []
-
-    const numericQuery = normalized.match(/^#?(\d{1,4})$/)
-    return pokemonData.entries
-      .filter((entry) => {
-        if (numericQuery) return entry.nationalId === Number(numericQuery[1])
-        return [entry.name, entry.formLabel, entry.region]
-          .filter(Boolean)
-          .some((value) => value.toLocaleLowerCase('zh-CN').includes(normalized))
-      })
-      .slice(0, 8)
-  }, [query])
+  const searchResults = useMemo(() => searchPokemon(searchIndex, query), [query])
 
   const currentBoxCollected = currentBox.cells.filter(
     (slot) => slot && collected.has(slot.key),
@@ -1194,14 +1183,14 @@ function App() {
             >
               <SearchIcon />
               <label className="sr-only" htmlFor="pokemon-search">
-                搜索全国编号或中文名
+                搜索全国编号、中文名或拼音首字母
               </label>
               <input
                 id="pokemon-search"
                 value={query}
                 type="search"
                 autoComplete="off"
-                placeholder="搜索编号、名称或地区形态…"
+                placeholder="搜索编号、中文名、拼音首字母或地区形态…"
                 aria-expanded={searchOpen && Boolean(query.trim())}
                 aria-controls="search-results"
                 onFocus={() => setSearchOpen(true)}
