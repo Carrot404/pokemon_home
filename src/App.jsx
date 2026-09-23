@@ -131,6 +131,17 @@ function uniqueMegaStones(megaForms = []) {
   return [...new Map(megaForms.map((form) => [form.stone.slug, form.stone])).values()]
 }
 
+function AnniversaryMark() {
+  return (
+    <div className="anniversary-mark" role="img" aria-label="宝可梦 30 周年，1996 至 2026，非官方纪念设计">
+      <span className="anniversary-mark-top" aria-hidden="true">POKÉMON</span>
+      <strong aria-hidden="true">3<span className="anniversary-ball">0</span></strong>
+      <span className="anniversary-mark-label" aria-hidden="true">周年 · 相伴</span>
+      <span className="anniversary-mark-years" aria-hidden="true">1996 — 2026</span>
+    </div>
+  )
+}
+
 function SearchIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -528,13 +539,11 @@ function LoginScreen({ localCount, busy, error, onLogin, onExport }) {
   return (
     <div className="app-shell sync-shell">
       <main className="sync-card" aria-labelledby="sync-login-title">
-        <div className="brand-mark" aria-hidden="true">
-          <BoxIcon />
-        </div>
-        <p className="eyebrow">COLLECTION SYNC</p>
-        <h1 id="sync-login-title">登录收藏同步</h1>
+        <AnniversaryMark />
+        <p className="eyebrow">宝可梦 30 周年 · 非官方纪念主题</p>
+        <h1 id="sync-login-title">欢迎回到你的图鉴</h1>
         <p className="sync-card-description">
-          登录后，收集状态会安全地保存在服务器，并在不同设备间同步。
+          三十年冒险，每一份相遇都值得珍藏。登录 HOME 全国图鉴收纳册，在不同设备间同步你的收藏。
         </p>
 
         <form
@@ -567,7 +576,7 @@ function LoginScreen({ localCount, busy, error, onLogin, onExport }) {
           />
           {error && <p className="sync-error" role="alert">{error}</p>}
           <button className="sync-primary-button" type="submit" disabled={busy}>
-            {busy ? '正在登录…' : '登录'}
+            {busy ? '正在登录…' : '登录，继续收藏之旅'}
           </button>
         </form>
 
@@ -598,9 +607,7 @@ function MigrationScreen({
   return (
     <div className="app-shell sync-shell">
       <main className="sync-card" aria-labelledby="sync-migration-title">
-        <div className="brand-mark" aria-hidden="true">
-          <BoxIcon />
-        </div>
+        <AnniversaryMark />
         <p className="eyebrow">首次同步 · {username}</p>
         <h1 id="sync-migration-title">初始化服务器收藏</h1>
         <p className="sync-card-description">
@@ -647,10 +654,8 @@ function SyncStatusScreen({ title, description, error, onRetry, onLogout }) {
   return (
     <div className="app-shell sync-shell">
       <main className="sync-card" aria-labelledby="sync-status-title">
-        <div className="brand-mark" aria-hidden="true">
-          <BoxIcon />
-        </div>
-        <p className="eyebrow">COLLECTION SYNC</p>
+        <AnniversaryMark />
+        <p className="eyebrow">宝可梦 30 周年 · 收藏同步</p>
         <h1 id="sync-status-title">{title}</h1>
         <p className="sync-card-description">{description}</p>
         {error && <p className="sync-error" role="alert">{error}</p>}
@@ -1149,17 +1154,13 @@ function App() {
   return (
     <div className="app-shell">
       <header className="hero">
-        <div className="hero-glow hero-glow--one" aria-hidden="true" />
-        <div className="hero-glow hero-glow--two" aria-hidden="true" />
         <div className="hero-copy">
-          <div className="brand-mark" aria-hidden="true">
-            <BoxIcon />
-          </div>
           <div>
-            <p className="eyebrow">NATIONAL DEX · BOX GUIDE</p>
-            <h1>HOME 全国图鉴收纳册</h1>
+            <p className="eyebrow">1996 — 2026 · 宝可梦 30 周年</p>
+            <h1><span>HOME 全国图鉴</span>收纳册<span className="hero-title-dot" aria-hidden="true">。</span></h1>
             <p className="hero-description">
-              普通与闪光左右相邻，按世代规划每一个 HOME 箱位。
+              三十年冒险，每一份相遇都值得珍藏。
+              <span>普通与闪光并肩，让每一位伙伴都有自己的位置。</span>
             </p>
             <div className="sync-account" aria-live="polite">
               <span className="sync-indicator" data-status={syncStatus} aria-hidden="true" />
@@ -1183,6 +1184,12 @@ function App() {
           </div>
         </div>
 
+        <div className="hero-anniversary">
+          <AnniversaryMark />
+          <p>始于相遇，未完待续。</p>
+          <span>非官方纪念主题</span>
+        </div>
+
         <div className="hero-stats" aria-label="收藏总览">
           <div
             className="progress-ring"
@@ -1193,6 +1200,10 @@ function App() {
               <strong>{progress}%</strong>
               <span>总进度</span>
             </div>
+          </div>
+          <div className="collection-caption">
+            <span>MY COLLECTION</span>
+            <strong>把热爱，一格格珍藏</strong>
           </div>
           <dl className="metric-list">
             <div>
@@ -1309,7 +1320,7 @@ function App() {
               onChange={setVariantFilter}
             />
           </div>
-          <p className="filter-hint">筛选仅淡化不符合项，不会改变固定箱位。</p>
+          <p className="filter-hint">普通在左 · 闪光在右 · 筛选仅淡化，不改变固定箱位</p>
           <div className="marked-section">
             <button
               className="marked-toggle"
